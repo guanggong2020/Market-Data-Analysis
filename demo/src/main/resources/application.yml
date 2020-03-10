@@ -1,0 +1,69 @@
+# 项目访问路径
+server:
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  # 把数据库日期格式转换成json返回页面的格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  data:
+    mongodb:
+      host: 134.175.192.53
+      port: 27017
+      database: bishe
+
+  mvc:
+    date-format: yyyy-MM-dd
+
+  # 禁用缓存
+  thymeleaf:
+    cache: true
+    prefix=classpath: /templates/
+
+  # 国际化配置文件（包名.基础名）
+  messages:
+    basename: i18n.login
+
+  datasource:
+    # 数据源基本信息
+    username: root
+    password: '@Root123'
+    url: jdbc:mysql://134.175.192.53:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    # 数据源额外信息
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+    schema:
+#      - classpath:sql/user.sql
+#      - classpath:sql/administrator.sql
+    # SpringBoot2.X版本需要的参数
+#    initialization-mode: ALWAYS
+
+logging:
+  level:
+    com.example.demo: trace
+  file:
+    path: /usr/local/src/logs

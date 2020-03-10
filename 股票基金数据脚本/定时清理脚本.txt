@@ -1,0 +1,9 @@
+#!/bin/bash
+targetpath='/usr/local/src/dump'
+nowtime=$(date -d '-1 days' "+%Y%m%d")
+if [ -d "${targetpath}/${nowtime}/" ]
+then
+  rm -rf "${targetpath}/${nowtime}/"
+  echo "=======${targetpath}/${nowtime}/===É¾³ýÍê±Ï=="
+fi
+echo "===$nowtime ==="

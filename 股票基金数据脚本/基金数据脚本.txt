@@ -1,0 +1,67 @@
+#!/bin/bash
+mongo -u admin -p @Admin123 --authenticationDatabase admin 127.0.0.1:27017/test <<EOF
+# 选择数据库
+use keshe
+
+# 基金数据抽取
+db.getCollection("JJ_test").aggregate([
+	{$project:{
+		"date":{$substr:["$date",0,-1]},
+		"code":{$substr:["$code",0,-1]},
+		"fundName":{$substr:["$fundName",0,-1]},
+		"unitNetWorth":{$substr:["$unitNetWorth",0,-1]},
+		"cumulativeNetWorth":{$substr:["$cumulativeNetWorth",0,-1]},
+		"growthRate":{$substr:["$growthRate",0,-1]}
+		}},
+	{$out:"jj1"}
+])
+
+# 基金数据转换
+db.getCollection("jj1").find({"unitNetWorth":{$type:2}}).forEach(function(x){
+	db.getCollection("jj1").updateOne({_id:x._id},{$set:{unitNetWorth: Number(x.unitNetWorth)}})
+})
+
+db.getCollection("jj1").find({"cumulativeNetWorth":{$type:2}}).forEach(function(x){
+	db.getCollection("jj1").updateOne({_id:x._id},{$set:{cumulativeNetWorth: Number(x.cumulativeNetWorth)}})
+})
+
+db.getCollection("jj1").find({"growthRate":{$type:2}}).forEach(function(x){
+	db.getCollection("jj1").updateOne({_id:x._id},{$set:{growthRate: Number(x.growthRate/100)}})
+})
+
+# 基金数据加载
+db.jj1.find().forEach(function(d){
+	db.getSiblingDB("bishe").jijin_data.insert(d)
+})
+
+# 临时基金集合清除
+db.jj1.drop()
+db.JJ_test.deleteMany({})
+
+# 选择数据库
+use bishe
+
+# 获取每支基金的最新数据
+db.jt.drop()
+db.jtd.drop()
+
+db.jijin_data.aggregate([
+	{$group:{_id:"$code"}},
+	{$out:"jt"}
+])
+
+db.jt.find({}).forEach(
+    function(x) {
+        db.jijin_data.find({"code":x._id}).sort({date:-1}).limit(1).forEach(
+            function(y) {
+                db.jtd.insert(y)
+            }
+        )
+    }
+)
+
+# 给集合jtd建立索引
+db.jtd.createIndex({"code":1})
+db.jtd.createIndex({"fundName":1})
+db.jtd.createIndex({"date":-1,"unitNetWorth":-1,"cumulativeNetWorth":-1,"growthRate":-1})
+EOF
