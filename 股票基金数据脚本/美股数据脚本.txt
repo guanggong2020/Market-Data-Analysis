@@ -1,0 +1,186 @@
+// 连接mongodb
+conn = new Mongo("127.0.0.1")
+
+// 认证
+db = conn.getDB("admin")
+db.auth("admin","@Admin123")
+
+// 选择数据库
+db = conn.getDB("stock")
+
+// 字段重命名
+db.getCollection("USA_stock_daily_data").update({}, {$rename: {"latestPrice": "closingPrice"}}, false, true)
+
+// 美股数据抽取
+db.getCollection("USA_stock_daily_data").aggregate([
+	{$project:{
+		"date":{$substr:["$date",0,-1]},
+		"code":{$substr:["$code",0,-1]},
+		"name":{$substr:["$name",0,-1]},
+		"closingPrice":{$substr:["$closingPrice",0,-1]},
+		"openingPrice":{$substr:["$openingPrice",0,-1]},
+		"maxPrice":{$substr:["$maxPrice",0,-1]},
+		"minPrice":{$substr:["$minPrice",0,-1]},
+		"volume":{$substr:["$volume",0,-1]},
+		"previousClose":{$substr:["$previousClose",0,-1]},
+		"quoteChange":{$substr:["$quoteChange",0,-1]},
+		"change":{$substr:["$change",0,-1]},
+		"turnover":{$substr:["$turnover",0,-1]},
+		"amplitude":{$substr:["$amplitude",0,-1]},
+		"turnoverRate":{$substr:["$turnoverRate",0,-1]},
+		"PER":{$substr:["$PER",0,-1]},
+		"QRR":{$substr:["$QRR",0,-1]},
+		"PBR":{$substr:["$PBR",0,-1]},
+		"totalMarketCapitalization":{$substr:["$totalMarketCapitalization",0,-1]},
+		"TTM":{$substr:["$TTM",0,-1]},
+		"EPS":{$substr:["$EPS",0,-1]},
+		"NAVPS":{$substr:["$NAVPS",0,-1]}
+		}},
+	{$out:"USA_stock_daily_data_test"}
+])
+
+// 美股数据转换
+db.getCollection("USA_stock_daily_data_test").find({"closingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{closingPrice: Number(x.closingPrice)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"openingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{openingPrice: Number(x.openingPrice)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"maxPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{maxPrice: Number(x.maxPrice)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"minPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{minPrice: Number(x.minPrice)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"volume":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{volume: Number(x.volume)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"previousClose":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{previousClose: Number(x.previousClose)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"quoteChange":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{quoteChange: Number(x.quoteChange)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"change":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{change: Number(x.change)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"turnover":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{turnover: Number(x.turnover)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"amplitude":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{amplitude: Number(x.amplitude)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"turnoverRate":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{turnoverRate: Number(x.turnoverRate)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"PER":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{PER: Number(x.PER)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"QRR":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{QRR: Number(x.QRR)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"PBR":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{PBR: Number(x.PBR)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"totalMarketCapitalization":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{totalMarketCapitalization: Number(x.totalMarketCapitalization)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"TTM":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{TTM: Number(x.TTM)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"EPS":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{EPS: Number(x.EPS)}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"NAVPS":{$type:2}}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{NAVPS: Number(x.NAVPS)}})
+})
+
+// 美股数据清洗
+db.getCollection("USA_stock_daily_data_test").find({"closingPrice":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{closingPrice:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"openingPrice":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{openingPrice:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"maxPrice":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{maxPrice:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"minPrice":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{minPrice:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"volume":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{volume:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"previousClose":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{previousClose:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"quoteChange":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{quoteChange:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"change":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{change:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"turnover":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{turnover:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"amplitude":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{amplitude:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"turnoverRate":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{turnoverRate:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"PER":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{PER:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"QRR":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{QRR:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"PBR":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{PBR:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"totalMarketCapitalization":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{totalMarketCapitalization:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"TTM":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{TTM:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"EPS":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{EPS:0}})
+})
+db.getCollection("USA_stock_daily_data_test").find({"NAVPS":NaN}).forEach(function(x){
+	db.getCollection("USA_stock_daily_data_test").updateOne({_id:x._id},{$set:{NAVPS:0}})
+})
+
+// 美股数据加载
+db.USA_stock_daily_data_test.find().forEach(function(d){
+	db.getSiblingDB("bishe").USA_stock_data.insert(d)
+})
+
+// 临时美股集合清除
+db.USA_stock_daily_data_test.drop()
+db.USA_stock_daily_data.deleteMany({})
+
+// 选择数据库
+db = conn.getDB("bishe")
+
+// 获取每支美股的最新数据
+db.USA_stock.drop()
+db.USA_stock_latest_daily_data.drop()
+db.USA_stock_data.aggregate([
+	{$group:{_id:"$code"}},
+	{$out:"USA_stock"}
+])
+db.USA_stock.find({}).forEach(
+    function(x) {
+        db.USA_stock_data.find({"code":x._id}).sort({date:-1}).limit(1).forEach(
+            function(y) {
+                db.USA_stock_latest_daily_data.insert(y)
+            }
+        )
+    }
+)
+
+// 给集合USA_stock_latest_daily_data建立索引
+db.USA_stock_latest_daily_data.createIndex({"code":1})
+db.USA_stock_latest_daily_data.createIndex({"name":1})
+db.USA_stock_latest_daily_data.createIndex({"date":-1,"closingPrice":-1,"change":-1,"quoteChange":-1})

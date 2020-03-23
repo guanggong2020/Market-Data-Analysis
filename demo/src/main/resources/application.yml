@@ -16,6 +16,8 @@ spring:
       host: 134.175.192.53
       port: 27017
       database: bishe
+      username: bishe
+      password: '@Bishe123'
 
   mvc:
     date-format: yyyy-MM-dd
@@ -23,7 +25,7 @@ spring:
   # 禁用缓存
   thymeleaf:
     cache: true
-    prefix=classpath: /templates/
+    prefix：classpath: /templates/
 
   # 国际化配置文件（包名.基础名）
   messages:

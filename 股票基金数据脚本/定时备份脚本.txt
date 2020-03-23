@@ -5,7 +5,7 @@ nowtime=$(date +%Y%m%d)
  
 start()
 {
-  ${sourcepath}/mongodump --host 127.0.0.1 --port 27017 --out ${targetpath}/${nowtime}
+  ${sourcepath}/mongodump -u admin -p @Admin123 --host 127.0.0.1 --port 27017 --out ${targetpath}/${nowtime}
 }
 execute()
 {

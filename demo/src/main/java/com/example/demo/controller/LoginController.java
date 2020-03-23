@@ -20,7 +20,7 @@ public class LoginController {
 //    @GetMapping
 
     //@RequestMapping(value = "/admin/login",method = RequestMethod.POST)
-    @PostMapping(value = "/admin/login")
+    @PostMapping("/admin/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
                         Map<String, Object> map, HttpSession session){

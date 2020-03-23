@@ -16,7 +16,7 @@ public class JiJinDataController {
     @Autowired
     private JiJinDataDao jiJinDataDao;
 
-    @RequestMapping("/findDataByName/{input}/{pageNum}/{pageSize}")
+    @RequestMapping("/findDataByCodeOrName/{input}/{pageNum}/{pageSize}")
     public List<JiJinData> find(@PathVariable("input") String input, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
         List<JiJinData> dataList = jiJinDataDao.findDataByCodeOrName(input, pageNum, pageSize);
         return dataList;

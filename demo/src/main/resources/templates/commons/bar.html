@@ -7,11 +7,10 @@
 <body>
 <!--topbar-->
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
-<!--    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://getbootstrap.com/docs/4.0/examples/dashboard/#">[[${session.loginUser}]]</a>-->
-<!--    <input class="form-control form-control-dark w-100" type="text" placeholder="搜索" aria-label="Search">-->
-    <a class="nav-link active"
-       th:class="${activeUri=='main.html'?'nav-link active':'nav-link'}"
-       href="#" th:href="@{/main.html}">[[${session.loginUser}]]</a>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">[[${session.loginUser}]]</a>
+    <form class="form-search w-100" th:action="@{/search}" method="post" >
+        <input class="form-control form-control-dark" type="text" name="input" placeholder="请输入 （A股/美股 + 股票)/基金 + 代码/名称" aria-label="Search">
+    </form>
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link active" href="#" th:href="@{/signout}"
@@ -37,7 +36,7 @@
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
-                    仪表板 <span class="sr-only">(current)</span>
+                    主页<span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item">

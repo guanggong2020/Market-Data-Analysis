@@ -1,9 +1,14 @@
-#!/bin/bash
-mongo -u admin -p @Admin123 --authenticationDatabase admin 127.0.0.1:27017/test <<EOF
-# 选择数据库
-use keshe
+// 连接mongodb
+conn = new Mongo("127.0.0.1")
 
-# 股票数据抽取
+// 认证
+db = conn.getDB("admin")
+db.auth("admin","@Admin123")
+
+// 选择数据库
+db = conn.getDB("keshe")
+
+// 股票数据抽取
 db.getCollection("GP_test").aggregate([
 	{$project:{
 		"date":{$substr:["$date",0,-1]},
@@ -25,76 +30,101 @@ db.getCollection("GP_test").aggregate([
 	{$out:"gp1"}
 ])
 
-# 股票数据转换
+// 股票数据转换
 db.getCollection("gp1").find({"closingPrice":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{closingPrice: Number(x.closingPrice)}})
 })
-
 db.getCollection("gp1").find({"maxPrice":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{maxPrice: Number(x.maxPrice)}})
 })
-
 db.getCollection("gp1").find({"minPrice":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{minPrice: Number(x.minPrice)}})
 })
-
 db.getCollection("gp1").find({"openingPrice":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{openingPrice: Number(x.openingPrice)}})
 })
-
 db.getCollection("gp1").find({"previousClose":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{previousClose: Number(x.previousClose)}})
 })
-
 db.getCollection("gp1").find({"change":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{change: Number(x.change)}})
 })
-
 db.getCollection("gp1").find({"quoteChange":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{quoteChange: Number(x.quoteChange)}})
 })
-
 db.getCollection("gp1").find({"turnoverRate":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{turnoverRate: Number(x.turnoverRate)}})
 })
-
 db.getCollection("gp1").find({"volume":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{volume: Number(x.volume)}})
 })
-
 db.getCollection("gp1").find({"turnover":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{turnover: Number(x.turnover)}})
 })
-
 db.getCollection("gp1").find({"totalMarketCapitalization":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{totalMarketCapitalization: Number(x.totalMarketCapitalization)}})
 })
-
 db.getCollection("gp1").find({"marketCapitalization":{$type:2}}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{marketCapitalization: Number(x.marketCapitalization)}})
 })
 
-# 股票数据加载
+// 股票数据清洗
+db.getCollection("gp1").find({"closingPrice":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{closingPrice:0}})
+})
+db.getCollection("gp1").find({"maxPrice":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{maxPrice:0}})
+})
+db.getCollection("gp1").find({"minPrice":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{minPrice:0}})
+})
+db.getCollection("gp1").find({"openingPrice":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{openingPrice:0}})
+})
+db.getCollection("gp1").find({"previousClose":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{previousClose:0}})
+})
+db.getCollection("gp1").find({"change":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{change:0}})
+})
+db.getCollection("gp1").find({"quoteChange":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{quoteChange:0}})
+})
+db.getCollection("gp1").find({"turnoverRate":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{turnoverRate:0}})
+})
+db.getCollection("gp1").find({"volume":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{volume:0}})
+})
+db.getCollection("gp1").find({"turnover":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{turnover:0}})
+})
+db.getCollection("gp1").find({"totalMarketCapitalization":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{totalMarketCapitalization:0}})
+})
+db.getCollection("gp1").find({"marketCapitalization":NaN}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{marketCapitalization:0}})
+})
+
+// 股票数据加载
 db.gp1.find().forEach(function(d){
 	db.getSiblingDB("bishe").gupiao_data.insert(d)
 })
 
-# 临时股票集合清除
+// 临时股票集合清除
 db.gp1.drop()
 db.GP_test.deleteMany({})
 
-# 选择数据库
-use bishe
+// 选择数据库
+db = conn.getDB("bishe")
 
-# 获取每支股票的最新数据
+// 获取每支股票的最新数据
 db.gt.drop()
 db.gtd.drop()
-
 db.gupiao_data.aggregate([
 	{$group:{_id:"$code"}},
 	{$out:"gt"}
 ])
-
 db.gt.find({}).forEach(
     function(x) {
         db.gupiao_data.find({"code":x._id}).sort({date:-1}).limit(1).forEach(
@@ -105,8 +135,7 @@ db.gt.find({}).forEach(
     }
 )
 
-# 给集合gtd建立索引
+// 给集合gtd建立索引
 db.gtd.createIndex({"code":1})
 db.gtd.createIndex({"name":1})
 db.gtd.createIndex({"date":-1,"closingPrice":-1,"change":-1,"quoteChange":-1})
-EOF
