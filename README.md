@@ -48,8 +48,8 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/gupiao_data/findDataByCodeOrName/000001/1/10
-2 http://134.175.192.53:8080/gupiao_data/findDataByCodeOrName/平安银行/1/10
+1 http://134.175.192.53:8080/gupiao_data/findDataByCodeOrName/000001/1/10  
+2 http://134.175.192.53:8080/gupiao_data/findDataByCodeOrName/平安银行/1/10  
 
 2）http://134.175.192.53:8080/gupiao_data/findDataByRegex/input/selection/pageNum/pageSize
 
@@ -60,9 +60,9 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/gupiao_data/findDataByRegex/%20/comprehensive/1/10
-2 http://134.175.192.53:8080/gupiao_data/findDataByRegex/01/comprehensive/1/10
-3 http://134.175.192.53:8080/gupiao_data/findDataByRegex/平安/comprehensive/1/10
+1 http://134.175.192.53:8080/gupiao_data/findDataByRegex/%20/comprehensive/1/10  
+2 http://134.175.192.53:8080/gupiao_data/findDataByRegex/01/comprehensive/1/10  
+3 http://134.175.192.53:8080/gupiao_data/findDataByRegex/平安/comprehensive/1/10  
 
 3）http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/input/pageNum/pageSize
 
@@ -72,8 +72,8 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/000310/1/10
-2 http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/安信永利信用A/1/10
+1 http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/000310/1/10  
+2 http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/安信永利信用A/1/10  
 
 4）http://134.175.192.53:8080/jijin_data/findDataByRegex/input/selection/pageNum/pageSize
 
@@ -84,9 +84,9 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/jijin_data/findDataByRegex/%20/comprehensive/1/10
-2 http://134.175.192.53:8080/jijin_data/findDataByRegex/31/comprehensive/1/10
-3 http://134.175.192.53:8080/jijin_data/findDataByRegex/利/comprehensive/1/10
+1 http://134.175.192.53:8080/jijin_data/findDataByRegex/%20/comprehensive/1/10  
+2 http://134.175.192.53:8080/jijin_data/findDataByRegex/31/comprehensive/1/10  
+3 http://134.175.192.53:8080/jijin_data/findDataByRegex/利/comprehensive/1/10  
 
 5）http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/input/pageNum/pageSize
 
@@ -96,8 +96,8 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/HAPP/1/10
-2 http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/幸福来/1/10
+1 http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/HAPP/1/10  
+2 http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/幸福来/1/10  
 
 6）http://134.175.192.53:8080/USA_stock_data/findDataByRegex/input/selection/pageNum/pageSize
 
@@ -108,6 +108,6 @@ pageNum：输入页数
 pageSize：输入每页大小  
 
 例如：  
-1 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/%20/closingPriceRise/1/10
-2 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/HA/closingPriceRise/1/10
-3 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/来/closingPriceRise/1/10
+1 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/%20/closingPriceRise/1/10  
+2 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/HA/closingPriceRise/1/10  
+3 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/来/closingPriceRise/1/10  
