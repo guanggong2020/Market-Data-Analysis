@@ -111,3 +111,12 @@ pageSize：输入每页大小
 1 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/%20/closingPriceRise/1/10  
 2 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/HA/closingPriceRise/1/10  
 3 http://134.175.192.53:8080/USA_stock_data/findDataByRegex/来/closingPriceRise/1/10  
+
+7）增加根据时间返回数据接口  
+1 http://134.175.192.53:8080/gupiao_data/findDataByCodeOrName/input/fromDate/toDatepageNum/pageSize  
+2 http://134.175.192.53:8080/jijin_data/findDataByCodeOrName/input/fromDate/toDatepageNum/pageSize  
+3 http://134.175.192.53:8080/USA_stock_data/findDataByCodeOrName/input/fromDate/toDatepageNum/pageSize  
+
+ps:
+fromDate：开始日期（格式：2020-03-12）  
+toDate：结束日期
