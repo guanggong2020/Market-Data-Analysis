@@ -29,7 +29,7 @@ db.getCollection("jj1").find({"cumulativeNetWorth":{$type:2}}).forEach(function(
 	db.getCollection("jj1").updateOne({_id:x._id},{$set:{cumulativeNetWorth: Number(x.cumulativeNetWorth)}})
 })
 db.getCollection("jj1").find({"growthRate":{$type:2}}).forEach(function(x){
-	db.getCollection("jj1").updateOne({_id:x._id},{$set:{growthRate: Number(x.growthRate/100)}})
+	db.getCollection("jj1").updateOne({_id:x._id},{$set:{growthRate: Number(x.growthRate)}})
 })
 
 // 基金数据清洗

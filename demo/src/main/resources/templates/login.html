@@ -7,13 +7,13 @@
 		<meta name="author" content="">
 		<title>行情后台管理</title>
 		<!-- Bootstrap core CSS -->
-		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet" type="text/css">
 		<!-- Custom styles for this template -->
-		<link href="asserts/css/signin.css" th:href="@{/asserts/css/signin.css}" rel="stylesheet">
+		<link href="asserts/css/signin.css" th:href="@{/asserts/css/signin.css}" rel="stylesheet" type="text/css">
 	</head>
 	<body class="text-center">
 		<form class="form-signin" action="dashboard.html" th:action="@{/admin/login}" method="post">
-			<img class="mb-4" th:src="@{/asserts/img/bootstrap-solid.svg}" src="asserts/img/bootstrap-solid.svg" alt="" width="72" height="72">
+			<img class="mb-4" src="asserts/img/symbol.webp" th:src="@{/asserts/img/symbol.webp}" alt="" width="72" height="72">
 			<h1 class="h3 mb-3 font-weight-normal" th:text="#{login.tip}">Please sign in</h1>
 			<!--判断-->
 			<p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
@@ -22,14 +22,14 @@
 			<label class="sr-only" th:text="#{login.password}">Password</label>
 			<input type="password" name="password" class="form-control" placeholder="Password" th:placeholder="#{login.password}" required="" autofocus="">
 			<div class="checkbox mb-3">
-				<label>
+				<label style="color: white">
 					<input type="checkbox" name="remember-me" value="true"/> [[#{login.remember}]]
         		</label>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{login.btn}">Sign in</button>
 			<p class="mt-5 mb-3 text-muted">© 2020</p>
-			<a class="btn btn-sm" th:href="@{/index.html(l='zh_CN')}">中文</a>
-			<a class="btn btn-sm" th:href="@{/index.html(l='en_US')}">English</a>
+			<a class="btn btn-sm" style="color: white" th:href="@{/index.html(l='zh_CN')}">中文</a>
+			<a class="btn btn-sm" style="color: white" th:href="@{/index.html(l='en_US')}">English</a>
 		</form>
 	</body>
 </html>

@@ -60,51 +60,51 @@
 									<th>时间</th>
 									<th>代码</th>
 									<th>名称</th>
-									<th>收盘价</th>
-									<th>开盘价</th>
-									<th>最高价</th>
-									<th>最低价</th>
-									<th>前收盘</th>
-									<th>涨跌额</th>
-									<th>涨跌幅</th>
-									<th>换手率</th>
-									<th>振幅</th>
-									<th>成交量</th>
-									<th>成交金额</th>
-									<th>PER</th>
-									<th>QRR</th>
-									<th>PBR</th>
-									<th>TTM</th>
-									<th>EPS</th>
-									<th>NAVPS</th>
-									<th>总市值</th>
+									<th id="th1" onclick="SortTable(this)">收盘价↓</th>
+									<th id="th2" onclick="SortTable(this)">开盘价↓</th>
+									<th id="th3" onclick="SortTable(this)">最高价↓</th>
+									<th id="th4" onclick="SortTable(this)">最低价↓</th>
+									<th id="th5" onclick="SortTable(this)">前收盘↓</th>
+									<th id="th6" onclick="SortTable(this)">涨跌额↓</th>
+									<th id="th7" onclick="SortTable(this)">涨跌幅(%)↓</th>
+									<th id="th8" onclick="SortTable(this)">换手率(%)↓</th>
+									<th id="th9" onclick="SortTable(this)">振幅(%)↓</th>
+									<th id="th10" onclick="SortTable(this)">成交量↓</th>
+									<th id="th11" onclick="SortTable(this)">成交金额↓</th>
+									<th id="th12" onclick="SortTable(this)">市盈率(%)↓</th>
+									<th id="th13" onclick="SortTable(this)">量比↓</th>
+									<th id="th14" onclick="SortTable(this)">市净率(%)↓</th>
+									<th id="th15" onclick="SortTable(this)">上市时间↓</th>
+									<th id="th16" onclick="SortTable(this)">每股收益↓</th>
+									<th id="th17" onclick="SortTable(this)">每股净资产↓</th>
+									<th id="th18" onclick="SortTable(this)">总市值($)↓</th>
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="data:${dataList}">
-									<td th:text="${data.date}"></td>
-									<td th:text="${data.code}"></td>
-									<td th:text="${data.name}"></td>
-									<td th:text="${data.closingPrice}"></td>
-									<td th:text="${data.openingPrice}"></td>
-									<td th:text="${data.maxPrice}"></td>
-									<td th:text="${data.minPrice}"></td>
-									<td th:text="${data.previousClose}"></td>
-									<td th:text="${data.change}"></td>
-									<td th:text="${data.quoteChange}+'%'"></td>
-									<td th:text="${data.turnoverRate}+'%'"></td>
-									<td th:text="${data.amplitude}"></td>
-									<td th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
-									<td th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
-									<td th:text="${data.PER}"></td>
-									<td th:text="${data.QRR}"></td>
-									<td th:text="${data.PBR}"></td>
-									<td th:text="${#numbers.formatInteger(data.TTM, 1)}"></td>
-									<td th:text="${data.EPS}"></td>
-									<td th:text="${data.NAVPS}"></td>
-									<td th:text="${#numbers.formatInteger(data.totalMarketCapitalization, 1)}"></td>
-									<td>
+									<td th:name="td0" th:text="${data.date}"></td>
+									<td th:name="td1" th:text="${data.code}"></td>
+									<td th:name="td2" th:text="${data.name}"></td>
+									<td th:name="td3" th:text="${data.closingPrice}"></td>
+									<td th:name="td4" th:text="${data.openingPrice}"></td>
+									<td th:name="td5" th:text="${data.maxPrice}"></td>
+									<td th:name="td6" th:text="${data.minPrice}"></td>
+									<td th:name="td7" th:text="${data.previousClose}"></td>
+									<td th:name="td8" th:text="${data.change}"></td>
+									<td th:name="td9" th:text="${data.quoteChange}"></td>
+									<td th:name="td10" th:text="${data.turnoverRate}"></td>
+									<td th:name="td11" th:text="${data.amplitude}"></td>
+									<td th:name="td12" th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
+									<td th:name="td13" th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
+									<td th:name="td14" th:text="${data.PER}"></td>
+									<td th:name="td15" th:text="${data.QRR}"></td>
+									<td th:name="td16" th:text="${data.PBR}"></td>
+									<td th:name="td17" th:text="${#numbers.formatInteger(data.TTM, 1)}"></td>
+									<td th:name="td18" th:text="${data.EPS}"></td>
+									<td th:name="td19" th:text="${data.NAVPS}"></td>
+									<td th:name="td20" th:text="${#numbers.formatInteger(data.totalMarketCapitalization, 1)}"></td>
+									<td th:name="td21">
 										<a class="btn btn-sm btn-primary" th:href="@{/search/us/}+${data.code}">更多</a>
 										<a class="btn btn-sm btn-primary" th:href="@{/search/us/graph/}+${data.code}">图形</a>
 									</td>
@@ -127,6 +127,194 @@
 		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
 		<script>
 			feather.replace()
+		</script>
+
+		<!--table属性点击排序js-->
+		<script type="text/javascript">
+			function sortNumberAsc(a, b) {
+				if(a < b) {
+					return -1;
+				}
+				if(a > b) {
+					return 1;
+				}
+				return 0;
+			}
+
+			function sortNumberDesc(a, b) {
+				if(a < b) {
+					return 1;
+				}
+				if(a > b) {
+					return -1;
+				}
+				return 0;
+			}
+
+			function SortTable(obj) {
+				var td0s = document.getElementsByName("td0");
+				var td1s = document.getElementsByName("td1");
+				var td2s = document.getElementsByName("td2");
+				var td3s = document.getElementsByName("td3");
+				var td4s = document.getElementsByName("td4");
+				var td5s = document.getElementsByName("td5");
+				var td6s = document.getElementsByName("td6");
+				var td7s = document.getElementsByName("td7");
+				var td8s = document.getElementsByName("td8");
+				var td9s = document.getElementsByName("td9");
+				var td10s = document.getElementsByName("td10");
+				var td11s = document.getElementsByName("td11");
+				var td12s = document.getElementsByName("td12");
+				var td13s = document.getElementsByName("td13");
+				var td14s = document.getElementsByName("td14");
+				var td15s = document.getElementsByName("td15");
+				var td16s = document.getElementsByName("td16");
+				var td17s = document.getElementsByName("td17");
+				var td18s = document.getElementsByName("td18");
+				var td19s = document.getElementsByName("td19");
+				var td20s = document.getElementsByName("td20");
+				var td21s = document.getElementsByName("td21");
+
+				var tdArray0 = [];
+				var tdArray1 = [];
+				var tdArray2 = [];
+				var tdArray3 = [];
+				var tdArray4 = [];
+				var tdArray5 = [];
+				var tdArray6 = [];
+				var tdArray7 = [];
+				var tdArray8 = [];
+				var tdArray9 = [];
+				var tdArray10 = [];
+				var tdArray11 = [];
+				var tdArray12 = [];
+				var tdArray13 = [];
+				var tdArray14 = [];
+				var tdArray15 = [];
+				var tdArray16 = [];
+				var tdArray17 = [];
+				var tdArray18 = [];
+				var tdArray19 = [];
+				var tdArray20 = [];
+				var tdArray21 = [];
+
+				for(var i = 0; i < td0s.length; i++) {
+					tdArray0.push(td0s[i].innerHTML);
+				}
+				for(var i = 0; i < td1s.length; i++) {
+					tdArray1.push(td1s[i].innerHTML);
+				}
+				for(var i = 0; i < td2s.length; i++) {
+					tdArray2.push(td2s[i].innerHTML);
+				}
+				for(var i = 0; i < td3s.length; i++) {
+					tdArray3.push(parseFloat(td3s[i].innerHTML));
+				}
+				for(var i = 0; i < td4s.length; i++) {
+					tdArray4.push(parseFloat(td4s[i].innerHTML));
+				}
+				for(var i = 0; i < td5s.length; i++) {
+					tdArray5.push(parseFloat(td5s[i].innerHTML));
+				}
+				for(var i = 0; i < td6s.length; i++) {
+					tdArray6.push(parseFloat(td6s[i].innerHTML));
+				}
+				for(var i = 0; i < td7s.length; i++) {
+					tdArray7.push(parseFloat(td7s[i].innerHTML));
+				}
+				for(var i = 0; i < td8s.length; i++) {
+					tdArray8.push(parseFloat(td8s[i].innerHTML));
+				}
+				for(var i = 0; i < td9s.length; i++) {
+					tdArray9.push(parseFloat(td9s[i].innerHTML));
+				}
+				for(var i = 0; i < td10s.length; i++) {
+					tdArray10.push(parseFloat(td10s[i].innerHTML));
+				}
+				for(var i = 0; i < td11s.length; i++) {
+					tdArray11.push(parseFloat(td11s[i].innerHTML));
+				}
+				for(var i = 0; i < td12s.length; i++) {
+					tdArray12.push(parseInt(td12s[i].innerHTML));
+				}
+				for(var i = 0; i < td13s.length; i++) {
+					tdArray13.push(parseInt(td13s[i].innerHTML));
+				}
+				for(var i = 0; i < td14s.length; i++) {
+					tdArray14.push(parseFloat(td14s[i].innerHTML));
+				}
+				for(var i = 0; i < td15s.length; i++) {
+					tdArray15.push(parseFloat(td15s[i].innerHTML));
+				}
+				for(var i = 0; i < td16s.length; i++) {
+					tdArray16.push(parseFloat(td16s[i].innerHTML));
+				}
+				for(var i = 0; i < td17s.length; i++) {
+					tdArray17.push(parseInt(td17s[i].innerHTML));
+				}
+				for(var i = 0; i < td18s.length; i++) {
+					tdArray18.push(parseFloat(td18s[i].innerHTML));
+				}
+				for(var i = 0; i < td19s.length; i++) {
+					tdArray19.push(parseFloat(td19s[i].innerHTML));
+				}
+				for(var i = 0; i < td20s.length; i++) {
+					tdArray20.push(parseInt(td20s[i].innerHTML));
+				}
+				for(var i = 0; i < td21s.length; i++) {
+					tdArray21.push(td21s[i].innerHTML);
+				}
+
+				var tds = document.getElementsByName("td"+(parseInt(obj.id.substr(2, obj.id.toLocaleString().length)) + 2));
+				var columnArray = [];
+				for(var i = 0; i < tds.length; i++) {
+					columnArray.push(parseFloat(tds[i].innerHTML));
+				}
+				var orginArray = [];
+				for(var i = 0; i < columnArray.length; i++) {
+					orginArray.push(columnArray[i]);
+				}
+				console.log(columnArray);
+				if(obj.className == "asc"){
+					columnArray.sort(sortNumberAsc);               //排序后的新值
+					obj.className = "desc";
+				}
+				else {
+					columnArray.sort(sortNumberDesc);               //排序后的新值
+					obj.className = "asc";
+				}
+				console.log(columnArray);
+				for(var i = 0; i < columnArray.length; i++) {
+					for(var j = 0; j < orginArray.length; j++) {
+						if(orginArray[j] == columnArray[i]){
+							document.getElementsByName("td0")[i].innerHTML = tdArray0[j];
+							document.getElementsByName("td1")[i].innerHTML = tdArray1[j];
+							document.getElementsByName("td2")[i].innerHTML = tdArray2[j];
+							document.getElementsByName("td3")[i].innerHTML = tdArray3[j];
+							document.getElementsByName("td4")[i].innerHTML = tdArray4[j];
+							document.getElementsByName("td5")[i].innerHTML = tdArray5[j];
+							document.getElementsByName("td6")[i].innerHTML = tdArray6[j];
+							document.getElementsByName("td7")[i].innerHTML = tdArray7[j];
+							document.getElementsByName("td8")[i].innerHTML = tdArray8[j];
+							document.getElementsByName("td9")[i].innerHTML = tdArray9[j];
+							document.getElementsByName("td10")[i].innerHTML = tdArray10[j];
+							document.getElementsByName("td11")[i].innerHTML = tdArray11[j];
+							document.getElementsByName("td12")[i].innerHTML = tdArray12[j];
+							document.getElementsByName("td13")[i].innerHTML = tdArray13[j];
+							document.getElementsByName("td14")[i].innerHTML = tdArray14[j];
+							document.getElementsByName("td15")[i].innerHTML = tdArray15[j];
+							document.getElementsByName("td16")[i].innerHTML = tdArray16[j];
+							document.getElementsByName("td17")[i].innerHTML = tdArray17[j];
+							document.getElementsByName("td18")[i].innerHTML = tdArray18[j];
+							document.getElementsByName("td19")[i].innerHTML = tdArray19[j];
+							document.getElementsByName("td20")[i].innerHTML = tdArray20[j];
+							document.getElementsByName("td21")[i].innerHTML = tdArray21[j];
+							orginArray[j] = null;
+							break;
+						}
+					}
+				}
+			}
 		</script>
 	</body>
 </html>

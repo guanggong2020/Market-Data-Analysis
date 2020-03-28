@@ -35,21 +35,33 @@ public class SearchController {
         String[] ss = input.split("\\+");
         List dataList = null;
 
-        if (ss.length == 3) {
-            if (ss[0].equals("A股")) {
-                dataList = guPiaoDataDao.findDataByRegex(ss[ss.length - 1], "comprehensive", pageNum, pageSize);
-
-                model.addAttribute("dataList", dataList);
-                return "search/gupiaoListAll";
-            }
-            else {
-                dataList = usaStockDataDao.findDataByRegex(ss[ss.length - 1], "comprehensive", pageNum, pageSize);
-                model.addAttribute("dataList", dataList);
-                return "search/USAStockListAll";
-            }
+        if (ss[0].equals("A股")) {
+            if (ss.length == 1)
+                dataList = guPiaoDataDao.findDataByRegex("", "comprehensive", pageNum, pageSize);
+            else if (ss.length == 2)
+                dataList = guPiaoDataDao.findDataByRegex(ss[1], "comprehensive", pageNum, pageSize);
+            else
+                dataList = guPiaoDataDao.findDataByRegex(ss[1], ss[2], pageNum, pageSize);
+            model.addAttribute("dataList", dataList);
+            return "search/gupiaoListAll";
         }
-        else if (ss.length == 2) {
-            dataList = jiJinDataDao.findDataByRegex(ss[ss.length - 1], "comprehensive", pageNum, pageSize);
+        else if (ss[0].equals("美股")) {
+            if (ss.length == 1)
+                dataList = usaStockDataDao.findDataByRegex("", "comprehensive", pageNum, pageSize);
+            else if (ss.length == 2)
+                dataList = usaStockDataDao.findDataByRegex(ss[1], "comprehensive", pageNum, pageSize);
+            else
+                dataList = usaStockDataDao.findDataByRegex(ss[1], ss[2], pageNum, pageSize);
+            model.addAttribute("dataList", dataList);
+            return "search/USAStockListAll";
+        }
+        else if (ss[0].equals("基金")){
+            if (ss.length == 1)
+                dataList = jiJinDataDao.findDataByRegex("", "comprehensive", pageNum, pageSize);
+            else if (ss.length == 2)
+                dataList = jiJinDataDao.findDataByRegex(ss[1], "comprehensive", pageNum, pageSize);
+            else
+                dataList = jiJinDataDao.findDataByRegex(ss[1], ss[2], pageNum, pageSize);
             model.addAttribute("dataList", dataList);
             return "search/jijinListAll";
         }

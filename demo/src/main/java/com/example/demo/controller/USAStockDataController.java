@@ -22,6 +22,12 @@ public class USAStockDataController {
         return dataList;
     }
 
+    @RequestMapping("/findDataByCodeOrName/{input}/{fromDate}/{toDate}/{pageNum}/{pageSize}")
+    public List<USAStockData> findByDate(@PathVariable("input") String input, @PathVariable String fromDate, @PathVariable String toDate, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
+        List<USAStockData> dataList = usaStockDataDao.findDataByCodeOrName(input, fromDate, toDate, pageNum, pageSize);
+        return dataList;
+    }
+
     @RequestMapping("/findDataByRegex/{input}/{selection}/{pageNum}/{pageSize}")
     public List<USAStockData> findByRegex(@PathVariable("input") String input, @PathVariable("selection") String selection, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
         List<USAStockData> dataList = usaStockDataDao.findDataByRegex(input, selection, pageNum, pageSize);

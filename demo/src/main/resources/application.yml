@@ -4,6 +4,7 @@ server:
     context-path: /
   tomcat:
     uri-encoding: UTF-8
+  max-http-header-size: 8192
 
 spring:
   # 把数据库日期格式转换成json返回页面的格式
@@ -18,13 +19,14 @@ spring:
       database: bishe
       username: bishe
       password: '@Bishe123'
+      authentication-database: bishe
 
   mvc:
     date-format: yyyy-MM-dd
 
   # 禁用缓存
   thymeleaf:
-    cache: true
+    cache: false
     prefix：classpath: /templates/
 
   # 国际化配置文件（包名.基础名）

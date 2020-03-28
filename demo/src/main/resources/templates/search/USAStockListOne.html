@@ -71,13 +71,13 @@
 									<th>振幅</th>
 									<th>成交量</th>
 									<th>成交金额</th>
-									<th>PER</th>
-									<th>QRR</th>
-									<th>PBR</th>
-									<th>TTM</th>
-									<th>EPS</th>
-									<th>NAVPS</th>
-									<th>总市值</th>
+									<th>市盈率</th>
+									<th>量比</th>
+									<th>市净率</th>
+									<th>上市时间</th>
+									<th>每股收益</th>
+									<th>每股净资产</th>
+									<th>总市值($)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -93,12 +93,12 @@
 									<td th:text="${data.change}"></td>
 									<td th:text="${data.quoteChange}+'%'"></td>
 									<td th:text="${data.turnoverRate}+'%'"></td>
-									<td th:text="${data.amplitude}"></td>
+									<td th:text="${data.amplitude}+'%'"></td>
 									<td th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
 									<td th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
-									<td th:text="${data.PER}"></td>
+									<td th:text="${data.PER}+'%'"></td>
 									<td th:text="${data.QRR}"></td>
-									<td th:text="${data.PBR}"></td>
+									<td th:text="${data.PBR}+'%'"></td>
 									<td th:text="${#numbers.formatInteger(data.TTM, 1)}"></td>
 									<td th:text="${data.EPS}"></td>
 									<td th:text="${data.NAVPS}"></td>

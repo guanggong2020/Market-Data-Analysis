@@ -60,21 +60,21 @@
 									<th>时间</th>
 									<th>代码</th>
 									<th>名称</th>
-									<th>单位净值</th>
-									<th>累计净值</th>
-									<th>增长率</th>
+									<th id="th1" onclick="SortTable(this)">单位净值↓</th>
+									<th id="th2" onclick="SortTable(this)">累计净值↓</th>
+									<th id="th3" onclick="SortTable(this)">增长率(%)↓</th>
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="data:${dataList}">
-									<td th:text="${data.date}"></td>
-									<td th:text="${data.code}"></td>
-									<td th:text="${data.fundName}"></td>
-									<td th:text="${data.unitNetWorth}"></td>
-									<td th:text="${data.cumulativeNetWorth}"></td>
-									<td th:text="${#numbers.formatPercent(data.growthRate, 1, 2)}"></td>
-									<td>
+									<td th:name="td0" th:text="${data.date}"></td>
+									<td th:name="td1" th:text="${data.code}"></td>
+									<td th:name="td2" th:text="${data.fundName}"></td>
+									<td th:name="td3" th:text="${data.unitNetWorth}"></td>
+									<td th:name="td4" th:text="${data.cumulativeNetWorth}"></td>
+									<td th:name="td5" th:text="${data.growthRate}"></td>
+									<td th:name="td6">
 										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/}+${data.code}">更多</a>
 										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/graph/}+${data.code}">图形</a>
 									</td>
@@ -97,6 +97,104 @@
 		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
 		<script>
 			feather.replace()
+		</script>
+
+		<!--table属性点击排序js-->
+		<script type="text/javascript">
+			function sortNumberAsc(a, b) {
+				if(a < b) {
+					return -1;
+				}
+				if(a > b) {
+					return 1;
+				}
+				return 0;
+			}
+
+			function sortNumberDesc(a, b) {
+				if(a < b) {
+					return 1;
+				}
+				if(a > b) {
+					return -1;
+				}
+				return 0;
+			}
+
+			function SortTable(obj) {
+				var td0s = document.getElementsByName("td0");
+				var td1s = document.getElementsByName("td1");
+				var td2s = document.getElementsByName("td2");
+				var td3s = document.getElementsByName("td3");
+				var td4s = document.getElementsByName("td4");
+				var td5s = document.getElementsByName("td5");
+				var td6s = document.getElementsByName("td6");
+
+				var tdArray0 = [];
+				var tdArray1 = [];
+				var tdArray2 = [];
+				var tdArray3 = [];
+				var tdArray4 = [];
+				var tdArray5 = [];
+				var tdArray6 = [];
+
+				for(var i = 0; i < td0s.length; i++) {
+					tdArray0.push(td0s[i].innerHTML);
+				}
+				for(var i = 0; i < td1s.length; i++) {
+					tdArray1.push(td1s[i].innerHTML);
+				}
+				for(var i = 0; i < td2s.length; i++) {
+					tdArray2.push(td2s[i].innerHTML);
+				}
+				for(var i = 0; i < td3s.length; i++) {
+					tdArray3.push(parseFloat(td3s[i].innerHTML));
+				}
+				for(var i = 0; i < td4s.length; i++) {
+					tdArray4.push(parseFloat(td4s[i].innerHTML));
+				}
+				for(var i = 0; i < td5s.length; i++) {
+					tdArray5.push(parseFloat(td5s[i].innerHTML));
+				}
+				for(var i = 0; i < td6s.length; i++) {
+					tdArray6.push(td6s[i].innerHTML);
+				}
+
+				var tds = document.getElementsByName("td"+(parseInt(obj.id.substr(2, obj.id.toLocaleString().length)) + 2));
+				var columnArray = [];
+				for(var i = 0; i < tds.length; i++) {
+						columnArray.push(parseFloat(tds[i].innerHTML));
+				}
+				var orginArray = [];
+				for(var i = 0; i < columnArray.length; i++) {
+					orginArray.push(columnArray[i]);
+				}
+				console.log(columnArray);
+				if(obj.className == "asc"){
+					columnArray.sort(sortNumberAsc);               //排序后的新值
+					obj.className = "desc";
+				}
+				else {
+					columnArray.sort(sortNumberDesc);               //排序后的新值
+					obj.className = "asc";
+				}
+				console.log(columnArray);
+				for(var i = 0; i < columnArray.length; i++) {
+					for(var j = 0; j < orginArray.length; j++) {
+						if(orginArray[j] == columnArray[i]){
+							document.getElementsByName("td0")[i].innerHTML = tdArray0[j];
+							document.getElementsByName("td1")[i].innerHTML = tdArray1[j];
+							document.getElementsByName("td2")[i].innerHTML = tdArray2[j];
+							document.getElementsByName("td3")[i].innerHTML = tdArray3[j];
+							document.getElementsByName("td4")[i].innerHTML = tdArray4[j];
+							document.getElementsByName("td5")[i].innerHTML = tdArray5[j];
+							document.getElementsByName("td6")[i].innerHTML = tdArray6[j];
+							orginArray[j] = null;
+							break;
+						}
+					}
+				}
+			}
 		</script>
 	</body>
 </html>

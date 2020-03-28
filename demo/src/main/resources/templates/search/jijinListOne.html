@@ -62,7 +62,7 @@
 									<th>名称</th>
 									<th>单位净值</th>
 									<th>累计净值</th>
-									<th>增长率</th>
+									<th>增长率(%)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -72,7 +72,7 @@
 									<td th:text="${data.fundName}"></td>
 									<td th:text="${data.unitNetWorth}"></td>
 									<td th:text="${data.cumulativeNetWorth}"></td>
-									<td th:text="${#numbers.formatPercent(data.growthRate, 1, 2)}"></td>
+									<td th:text="${data.growthRate}"></td>
 								</tr>
 							</tbody>
 						</table>

@@ -9,7 +9,7 @@
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">[[${session.loginUser}]]</a>
     <form class="form-search w-100" th:action="@{/search}" method="post" >
-        <input class="form-control form-control-dark" type="text" name="input" placeholder="请输入 （A股/美股 + 股票)/基金 + 代码/名称" aria-label="Search">
+        <input class="form-control form-control-dark" type="text" name="input" placeholder="请输入 A股/美股/基金 + 代码/名称" aria-label="Search">
     </form>
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">

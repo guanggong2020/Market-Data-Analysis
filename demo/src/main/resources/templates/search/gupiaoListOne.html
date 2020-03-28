@@ -66,11 +66,11 @@
 									<th>最低价</th>
 									<th>前收盘</th>
 									<th>涨跌额</th>
-									<th>涨跌幅</th>
-									<th>换手率</th>
+									<th>涨跌幅(%)</th>
+									<th>换手率(%)</th>
 									<th>成交量</th>
 									<th>成交金额</th>
-									<th>总市值</th>
+									<th>总市值(￥)</th>
 									<th>流通市值</th>
 								</tr>
 							</thead>
@@ -85,8 +85,8 @@
 									<td th:text="${data.minPrice}"></td>
 									<td th:text="${data.previousClose}"></td>
 									<td th:text="${data.change}"></td>
-									<td th:text="${data.quoteChange}+'%'"></td>
-									<td th:text="${data.turnoverRate}+'%'"></td>
+									<td th:text="${data.quoteChange}"></td>
+									<td th:text="${data.turnoverRate}"></td>
 									<td th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
 									<td th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
 									<td th:text="${#numbers.formatInteger(data.totalMarketCapitalization, 1)}"></td>

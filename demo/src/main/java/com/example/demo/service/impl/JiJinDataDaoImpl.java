@@ -15,9 +15,13 @@ import java.util.regex.Pattern;
 
 @Component
 public class JiJinDataDaoImpl implements JiJinDataDao {
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * 用于精确查询
+     */
     @Override
     public List<JiJinData> findDataByCodeOrName(String input, Integer pageNum, Integer pageSize) {
         if (input == null || input.trim().length() == 0)
@@ -37,18 +41,48 @@ public class JiJinDataDaoImpl implements JiJinDataDao {
         return mongoTemplate.find(query, JiJinData.class, "jijin_data");
     }
 
+    /**
+     * 用于精确查询（自定义时间范围）
+     */
+    @Override
+    public List<JiJinData> findDataByCodeOrName(String input, String fromDate, String toDate, Integer pageNum, Integer pageSize) {
+        if (input == null || input.trim().length() == 0)
+            return new ArrayList<JiJinData>();
+        Query query= new Query();
+        if (input.matches("\\d+"))
+            query.addCriteria(Criteria.where("code").is(input));
+        else
+            query.addCriteria(Criteria.where("fundName").is(input));
+
+        query.addCriteria(Criteria.where("date").gte(fromDate).lte(toDate));
+        query.with(Sort.by(Sort.Order.desc("date")));
+        long recordTotal = mongoTemplate.count(query, JiJinData.class, "jijin_data");
+        int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
+        System.out.println(pageTotal);
+        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        int offset = (pageNum - 1) * pageSize;
+        query.skip(offset).limit(pageSize);  // 分页逻辑
+        return mongoTemplate.find(query, JiJinData.class, "jijin_data");
+    }
+
+    /**
+     * 用于模糊查询
+     */
     @Override
     public List<JiJinData> findDataByRegex(String input, String selection, Integer pageNum, Integer pageSize) {
         Query query = new Query();
-        if (input == null || input.trim().length() == 0)
-            query.addCriteria(Criteria.where("").is(input));
-        else {
+        if (input != null && input.length() > 0) {
             Pattern pattern = Pattern.compile("^.*" + input + ".*$", Pattern.CASE_INSENSITIVE);
             if (input.matches("\\d+"))
                 query.addCriteria(Criteria.where("code").regex(pattern));
             else
                 query.addCriteria(Criteria.where("fundName").regex(pattern));
         }
+        else
+            query.addCriteria(Criteria.where("").is(input));
+
+        if (selection == null || selection.length() == 0)
+            selection = "comprehensive";
 
         if (selection.equals("comprehensive"))
             query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("unitNetWorth"), Sort.Order.desc("cumulativeNetWorth"), Sort.Order.desc("growthRate")));
@@ -74,6 +108,9 @@ public class JiJinDataDaoImpl implements JiJinDataDao {
         return mongoTemplate.find(query, JiJinData.class, "jtd");
     }
 
+    /**
+     * 用于统计股票数量
+     */
     @Override
     public Long jiJinCount() {
         return mongoTemplate.count(new Query(), JiJinData.class, "jtd");

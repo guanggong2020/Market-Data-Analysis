@@ -62,8 +62,8 @@
 								<td style="display: none" th:text="${data.minPrice}"></td>
 								<td style="display: none" th:text="${data.previousClose}"></td>
 								<td style="display: none" th:text="${data.change}"></td>
-								<td style="display: none" th:text="${data.quoteChange}+'%'"></td>
-								<td style="display: none" th:text="${data.turnoverRate}+'%'"></td>
+								<td style="display: none" th:text="${data.quoteChange}"></td>
+								<td style="display: none" th:text="${data.turnoverRate}"></td>
 								<td style="display: none" th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
 								<td style="display: none" th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
 								<td style="display: none" th:text="${#numbers.formatInteger(data.totalMarketCapitalization, 1)}"></td>
@@ -81,7 +81,7 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-						<h1 class="h2">Dashboard</h1>
+						<h1 class="h2" th:text="${dataList.get(0).name}"></h1>
 					</div>
 					<canvas class="my-4 chartjs-render-monitor" id="myChart1" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
 					<canvas class="my-4 chartjs-render-monitor" id="myChart2" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
@@ -139,8 +139,8 @@
 					datas4.push(Number(rows[i].cells[6].innerText));
 					datas5.push(Number(rows[i].cells[7].innerText));
 					datas6.push(Number(rows[i].cells[8].innerText));
-					datas7.push(Number(rows[i].cells[9].innerText.substring(0, rows[i].cells[9].innerText.length - 1)));
-					datas8.push(Number(rows[i].cells[10].innerText.substring(0, rows[i].cells[10].innerText.length - 1)));
+					datas7.push(Number(rows[i].cells[9].innerText));
+					datas8.push(Number(rows[i].cells[10].innerText));
 					datas9.push(Number(rows[i].cells[11].innerText));
 					datas10.push(Number(rows[i].cells[12].innerText));
 					datas11.push(Number(rows[i].cells[13].innerText));
@@ -585,7 +585,7 @@
 							yAxes: [{
 								scaleLabel: {
 									display: true,
-									labelString: '总市值'
+									labelString: '总市值（￥）'
 								},
 								ticks: {
 									beginAtZero: false

@@ -62,7 +62,7 @@
 									<td style="display: none" th:text="${data.fundName}"></td>
 									<td style="display: none" th:text="${data.unitNetWorth}"></td>
 									<td style="display: none" th:text="${data.cumulativeNetWorth}"></td>
-									<td style="display: none" th:text="${#numbers.formatPercent(data.growthRate, 1, 2)}"></td>
+									<td style="display: none" th:text="${data.growthRate}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -76,7 +76,7 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-						<h1 class="h2">Dashboard</h1>
+						<h1 class="h2" th:text="${dataList.get(0).fundName}"></h1>
 					</div>
 					<canvas class="my-4 chartjs-render-monitor" id="myChart1" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
 					<canvas class="my-4 chartjs-render-monitor" id="myChart2" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
@@ -112,7 +112,7 @@
 					labels.push(rows[i].cells[0].innerText);
 					datas1.push(Number(rows[i].cells[3].innerText));
 					datas2.push(Number(rows[i].cells[4].innerText));
-					datas3.push(Number(rows[i].cells[5].innerText.substring(0, rows[i].cells[5].innerText.length - 1)));
+					datas3.push(Number(rows[i].cells[5].innerText));
 				}
 
 				var ctx1 = document.getElementById("myChart1");
