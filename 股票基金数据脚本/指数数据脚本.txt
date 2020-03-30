@@ -1,0 +1,240 @@
+// 连接mongodb
+conn = new Mongo("127.0.0.1")
+
+// 认证
+db = conn.getDB("admin")
+db.auth("admin","@Admin123")
+
+// 选择数据库
+db = conn.getDB("keshe")
+
+// 上证数据抽取
+db.getCollection("SH_test").aggregate([
+	{$project:{
+		"date":{$substr:["$date",0,-1]},
+		"code":{$substr:["$code",0,-1]},
+		"name":{$substr:["$name",0,-1]},
+		"closingPrice":{$substr:["$closingPrice",0,-1]},
+		"openingPrice":{$substr:["$openingPrice",0,-1]},
+		"maxPrice":{$substr:["$maxPrice",0,-1]},
+		"minPrice":{$substr:["$minPrice",0,-1]},
+		"previousClose":{$substr:["$previousClose",0,-1]},
+		"change":{$substr:["$change",0,-1]},
+		"quoteChange":{$substr:["$quoteChange",0,-1]},
+		"volume":{$substr:["$volume",0,-1]},
+		"turnover":{$substr:["$turnover",0,-1]},
+		"amplitude":{$substr:["$amplitude",0,-1]},
+		"QRR":{$substr:["$QRR",0,-1]}
+		}},
+	{$out:"shangzheng"}
+])
+
+// 上证数据转换
+db.getCollection("shangzheng").find({"closingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{closingPrice: Number(x.closingPrice)}})
+})
+db.getCollection("shangzheng").find({"openingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{openingPrice: Number(x.openingPrice)}})
+})
+db.getCollection("shangzheng").find({"maxPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{maxPrice: Number(x.maxPrice)}})
+})
+db.getCollection("shangzheng").find({"minPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{minPrice: Number(x.minPrice)}})
+})
+db.getCollection("shangzheng").find({"previousClose":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{previousClose: Number(x.previousClose)}})
+})
+db.getCollection("shangzheng").find({"change":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{change: Number(x.change)}})
+})
+db.getCollection("shangzheng").find({"quoteChange":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{quoteChange: Number(x.quoteChange)}})
+})
+db.getCollection("shangzheng").find({"volume":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{volume: Number(x.volume)}})
+})
+db.getCollection("shangzheng").find({"turnover":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{turnover: Number(x.turnover)}})
+})
+db.getCollection("shangzheng").find({"amplitude":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{amplitude: Number(x.amplitude)}})
+})
+db.getCollection("shangzheng").find({"QRR":{$type:2}}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{QRR: Number(x.QRR)}})
+})
+
+// 上证数据清洗
+db.getCollection("shangzheng").find({"closingPrice":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{closingPrice:0}})
+})
+db.getCollection("shangzheng").find({"openingPrice":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{openingPrice:0}})
+})
+db.getCollection("shangzheng").find({"maxPrice":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{maxPrice:0}})
+})
+db.getCollection("shangzheng").find({"minPrice":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{minPrice:0}})
+})
+db.getCollection("shangzheng").find({"previousClose":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{previousClose:0}})
+})
+db.getCollection("shangzheng").find({"change":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{change:0}})
+})
+db.getCollection("shangzheng").find({"quoteChange":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{quoteChange:0}})
+})
+db.getCollection("shangzheng").find({"volume":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{volume:0}})
+})
+db.getCollection("shangzheng").find({"turnover":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{turnover:0}})
+})
+db.getCollection("shangzheng").find({"amplitude":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{amplitude:0}})
+})
+db.getCollection("shangzheng").find({"QRR":NaN}).forEach(function(x){
+	db.getCollection("shangzheng").updateOne({_id:x._id},{$set:{QRR:0}})
+})
+
+// 标记上证类型，为1
+db.shangzheng.update({}, {$set: {type: 1}},{multi: true})
+
+// 上证数据加载
+db.shangzheng.find().forEach(function(d){
+	db.getSiblingDB("bishe").shangzheng_shenzheng_data.insert(d)
+})
+
+// 临时上证集合清除
+db.shangzheng.drop()
+db.SH_test.deleteMany({})
+
+// 深证数据抽取
+db.getCollection("SZ_test").aggregate([
+	{$project:{
+		"date":{$substr:["$date",0,-1]},
+		"code":{$substr:["$code",0,-1]},
+		"name":{$substr:["$name",0,-1]},
+		"closingPrice":{$substr:["$closingPrice",0,-1]},
+		"openingPrice":{$substr:["$openingPrice",0,-1]},
+		"maxPrice":{$substr:["$maxPrice",0,-1]},
+		"minPrice":{$substr:["$minPrice",0,-1]},
+		"previousClose":{$substr:["$previousClose",0,-1]},
+		"change":{$substr:["$change",0,-1]},
+		"quoteChange":{$substr:["$quoteChange",0,-1]},
+		"volume":{$substr:["$volume",0,-1]},
+		"turnover":{$substr:["$turnover",0,-1]},
+		"amplitude":{$substr:["$amplitude",0,-1]},
+		"QRR":{$substr:["$QRR",0,-1]}
+		}},
+	{$out:"shenzheng"}
+])
+
+// 深证数据转换
+db.getCollection("shenzheng").find({"closingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{closingPrice: Number(x.closingPrice)}})
+})
+db.getCollection("shenzheng").find({"openingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{openingPrice: Number(x.openingPrice)}})
+})
+db.getCollection("shenzheng").find({"maxPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{maxPrice: Number(x.maxPrice)}})
+})
+db.getCollection("shenzheng").find({"minPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{minPrice: Number(x.minPrice)}})
+})
+db.getCollection("shenzheng").find({"previousClose":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{previousClose: Number(x.previousClose)}})
+})
+db.getCollection("shenzheng").find({"change":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{change: Number(x.change)}})
+})
+db.getCollection("shenzheng").find({"quoteChange":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{quoteChange: Number(x.quoteChange)}})
+})
+db.getCollection("shenzheng").find({"volume":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{volume: Number(x.volume)}})
+})
+db.getCollection("shenzheng").find({"turnover":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{turnover: Number(x.turnover)}})
+})
+db.getCollection("shenzheng").find({"amplitude":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{amplitude: Number(x.amplitude)}})
+})
+db.getCollection("shenzheng").find({"QRR":{$type:2}}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{QRR: Number(x.QRR)}})
+})
+
+// 深证数据清洗
+db.getCollection("shenzheng").find({"closingPrice":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{closingPrice:0}})
+})
+db.getCollection("shenzheng").find({"openingPrice":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{openingPrice:0}})
+})
+db.getCollection("shenzheng").find({"maxPrice":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{maxPrice:0}})
+})
+db.getCollection("shenzheng").find({"minPrice":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{minPrice:0}})
+})
+db.getCollection("shenzheng").find({"previousClose":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{previousClose:0}})
+})
+db.getCollection("shenzheng").find({"change":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{change:0}})
+})
+db.getCollection("shenzheng").find({"quoteChange":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{quoteChange:0}})
+})
+db.getCollection("shenzheng").find({"volume":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{volume:0}})
+})
+db.getCollection("shenzheng").find({"turnover":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{turnover:0}})
+})
+db.getCollection("shenzheng").find({"amplitude":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{amplitude:0}})
+})
+db.getCollection("shenzheng").find({"QRR":NaN}).forEach(function(x){
+	db.getCollection("shenzheng").updateOne({_id:x._id},{$set:{QRR:0}})
+})
+
+// 标记上证类型，为2
+db.shenzheng.update({}, {$set: {type: 2}},{multi: true})
+
+// 深证数据加载
+db.shenzheng.find().forEach(function(d){
+	db.getSiblingDB("bishe").shangzheng_shenzheng_data.insert(d)
+})
+
+// 临时深证集合清除
+db.shenzheng.drop()
+db.SZ_test.deleteMany({})
+
+// 选择数据库
+db = conn.getDB("bishe")
+
+// 获取沪深的最新数据
+db.zst.drop()
+db.zstd.drop()
+db.shangzheng_shenzheng_data.aggregate([
+	{$group:{_id:"$code"}},
+	{$out:"zst"}
+])
+db.zst.find({}).forEach(
+    function(x) {
+        db.shangzheng_shenzheng_data.find({"code":x._id}).sort({date:-1}).limit(1).forEach(
+            function(y) {
+                db.zstd.insert(y)
+            }
+        )
+    }
+)
+
+// 给集合zstd建立索引
+db.zstd.createIndex({"code":1})
+db.zstd.createIndex({"name":1})
+db.zstd.createIndex({"date":-1,"closingPrice":-1,"change":-1,"quoteChange":-1})

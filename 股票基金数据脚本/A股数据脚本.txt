@@ -106,6 +106,212 @@ db.getCollection("gp1").find({"marketCapitalization":NaN}).forEach(function(x){
 	db.getCollection("gp1").updateOne({_id:x._id},{$set:{marketCapitalization:0}})
 })
 
+// 重置含有空格的A股名称
+db.getCollection("gp1").find({name:"五 粮 液"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "五粮液"}})
+})
+db.getCollection("gp1").find({name:"苏 泊 尔"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "苏泊尔"}})
+})
+db.getCollection("gp1").find({name:"新 希 望"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "新希望"}})
+})
+db.getCollection("gp1").find({name:"新 和 成"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "新和成"}})
+})
+db.getCollection("gp1").find({name:"万 科Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "万科Ａ"}})
+})
+db.getCollection("gp1").find({name:"卫 士 通"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "卫士通"}})
+})
+db.getCollection("gp1").find({name:"张 裕Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "张裕Ａ"}})
+})
+db.getCollection("gp1").find({name:"生 意 宝"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "生意宝"}})
+})
+db.getCollection("gp1").find({name:"特 力Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "特力Ａ"}})
+})
+db.getCollection("gp1").find({name:"威 尔 泰"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "威尔泰"}})
+})
+db.getCollection("gp1").find({name:"新 大 陆"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "新大陆"}})
+})
+db.getCollection("gp1").find({name:"奥 特 迅"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "奥特迅"}})
+})
+db.getCollection("gp1").find({name:"特 尔 佳"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "特尔佳"}})
+})
+db.getCollection("gp1").find({name:"罗 牛 山"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "罗牛山"}})
+})
+db.getCollection("gp1").find({name:"全 聚 德"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "全聚德"}})
+})
+db.getCollection("gp1").find({name:"远 望 谷"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "远望谷"}})
+})
+db.getCollection("gp1").find({name:"步 步 高"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "步步高"}})
+})
+db.getCollection("gp1").find({name:"红 太 阳"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "红太阳"}})
+})
+db.getCollection("gp1").find({name:"中 关 村"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "中关村"}})
+})
+db.getCollection("gp1").find({name:"鲁 泰Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "鲁泰Ａ"}})
+})
+db.getCollection("gp1").find({name:"安 纳 达"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "安纳达"}})
+})
+db.getCollection("gp1").find({name:"金 螳 螂"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "金螳螂"}})
+})
+db.getCollection("gp1").find({name:"兔 宝 宝"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "兔宝宝"}})
+})
+db.getCollection("gp1").find({name:"英 力 特"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "英力特"}})
+})
+db.getCollection("gp1").find({name:"*ST 南糖"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "*ST南糖"}})
+})
+db.getCollection("gp1").find({name:"阳 光 城"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "阳光城"}})
+})
+db.getCollection("gp1").find({name:"农 产 品"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "农产品"}})
+})
+db.getCollection("gp1").find({name:"三 力 士"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "三力士"}})
+})
+db.getCollection("gp1").find({name:"金 融 街"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "金融街"}})
+})
+db.getCollection("gp1").find({name:"达 意 隆"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "达意隆"}})
+})
+db.getCollection("gp1").find({name:"柳 工"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "柳工"}})
+})
+db.getCollection("gp1").find({name:"深 赛 格"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "深赛格"}})
+})
+db.getCollection("gp1").find({name:"南 京 港"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "南京港"}})
+})
+db.getCollection("gp1").find({name:"诺 普 信"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "诺普信"}})
+})
+db.getCollection("gp1").find({name:"七 匹 狼"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "七匹狼"}})
+})
+db.getCollection("gp1").find({name:"粤 传 媒"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "粤传媒"}})
+})
+db.getCollection("gp1").find({name:"南 玻Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "南玻Ａ"}})
+})
+db.getCollection("gp1").find({name:"红 宝 丽"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "红宝丽"}})
+})
+db.getCollection("gp1").find({name:"盐 田 港"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "盐田港"}})
+})
+db.getCollection("gp1").find({name:"法 尔 胜"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "法尔胜"}})
+})
+db.getCollection("gp1").find({name:"新 华 都"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "新华都"}})
+})
+db.getCollection("gp1").find({name:"怡 亚 通"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "怡亚通"}})
+})
+db.getCollection("gp1").find({name:"渝 开 发"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "渝开发"}})
+})
+db.getCollection("gp1").find({name:"海 利 得"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "海利得"}})
+})
+db.getCollection("gp1").find({name:"报 喜 鸟"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "报喜鸟"}})
+})
+db.getCollection("gp1").find({name:"粤 水 电"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "粤水电"}})
+})
+db.getCollection("gp1").find({name:"雪 莱 特"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "雪莱特"}})
+})
+db.getCollection("gp1").find({name:"*ST 海马"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "*ST海马"}})
+})
+db.getCollection("gp1").find({name:"*ST 中绒"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "*ST中绒"}})
+})
+db.getCollection("gp1").find({name:"张 裕Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "张裕Ｂ"}})
+})
+db.getCollection("gp1").find({name:"山 航Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "山航Ｂ"}})
+})
+db.getCollection("gp1").find({name:"鲁 泰Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "鲁泰Ｂ"}})
+})
+db.getCollection("gp1").find({name:"江 铃Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "江铃Ｂ"}})
+})
+db.getCollection("gp1").find({name:"特 力Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "特 力Ｂ"}})
+})
+db.getCollection("gp1").find({name:"长 安Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "长 安Ｂ"}})
+})
+db.getCollection("gp1").find({name:"晨 鸣Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "晨鸣Ｂ"}})
+})
+db.getCollection("gp1").find({name:"中 鲁Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "中鲁Ｂ"}})
+})
+db.getCollection("gp1").find({name:"南 玻Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "南玻Ｂ"}})
+})
+db.getCollection("gp1").find({name:"大 冷Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "大冷Ｂ"}})
+})
+db.getCollection("gp1").find({name:"万  科Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "万科Ａ"}})
+})
+db.getCollection("gp1").find({name:"张  裕Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "张裕Ａ"}})
+})
+db.getCollection("gp1").find({name:"特  力Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "特力Ａ"}})
+})
+db.getCollection("gp1").find({name:"鲁  泰Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "鲁泰Ａ"}})
+})
+db.getCollection("gp1").find({name:"九 芝 堂"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "九芝堂"}})
+})
+db.getCollection("gp1").find({name:"柳    工"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "柳工"}})
+})
+db.getCollection("gp1").find({name:"南  玻Ａ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "南玻Ａ"}})
+})
+db.getCollection("gp1").find({name:"特 力Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "特力Ｂ"}})
+})
+db.getCollection("gp1").find({name:"长 安Ｂ"}).forEach(function(x){
+	db.getCollection("gp1").updateOne({_id:x._id},{$set:{name: "长安Ｂ"}})
+})
+
 // 股票数据加载
 db.gp1.find().forEach(function(d){
 	db.getSiblingDB("bishe").gupiao_data.insert(d)

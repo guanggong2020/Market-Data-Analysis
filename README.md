@@ -120,3 +120,10 @@ pageSize：输入每页大小
 ps:  
 fromDate：开始日期（格式：2020-03-12）  
 toDate：结束日期  
+
+8）上证、深证查询接口
+1 http://134.175.192.53:8080/shangzheng_shenzheng_data/findDataByCodeOrName/input/pageNum/pageSize  
+2 http://134.175.192.53:8080/shangzheng_shenzheng_data/findDataByCodeOrName/input/fromDate/toDate/pageNum/pageSize  
+3 http://134.175.192.53:8080/shangzheng_shenzheng_data/findDataByCodeOrName/input/selection/pageNum/pageSize  
+
+input：上证/深证+（代码或者名称，可选）  

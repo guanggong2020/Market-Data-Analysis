@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>行情后台管理</title>
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--引入topbar-->
+		<div th:replace="commons/bar::topbar"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<!--引入sidebar-->
+				<div th:replace="commons/bar::#sidebar"></div>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<div class="table-responsive">
+						<table class="table table-striped table-sm" id="tab">
+							<tbody>
+							<tr th:each="data:${dataList}">
+								<td style="display: none" th:text="${data.date}"></td>
+								<td style="display: none" th:text="${data.code}"></td>
+								<td style="display: none" th:text="${data.name}"></td>
+								<td style="display: none" th:text="${data.closingPrice}"></td>
+								<td style="display: none" th:text="${data.openingPrice}"></td>
+								<td style="display: none" th:text="${data.maxPrice}"></td>
+								<td style="display: none" th:text="${data.minPrice}"></td>
+								<td style="display: none" th:text="${data.previousClose}"></td>
+								<td style="display: none" th:text="${data.change}"></td>
+								<td style="display: none" th:text="${data.quoteChange}"></td>
+								<td style="display: none" th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
+								<td style="display: none" th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
+								<td style="display: none" th:text="${data.amplitude}"></td>
+								<td style="display: none" th:text="${data.QRR}"></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+						<div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+						</div>
+						<div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+						<h1 class="h2" th:text="${dataList.get(0).name}"></h1>
+					</div>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart1" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart2" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart3" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart4" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart5" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart6" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart7" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart8" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart9" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart10" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<canvas class="my-4 chartjs-render-monitor" id="myChart11" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+		<script type="text/javascript" src="asserts/js/Chart.min.js" th:src="@{/asserts/js/Chart.min.js}"></script>
+		<script type="text/javascript">
+			$(function () {
+				var labels = [];
+				var datas1 = [];
+				var datas2 = [];
+				var datas3 = [];
+				var datas4 = [];
+				var datas5 = [];
+				var datas6 = [];
+				var datas7 = [];
+				var datas8 = [];
+				var datas9 = [];
+				var datas10 = [];
+				var datas11 = [];
+				var tb = document.getElementById('tab');
+				var rows = tb.rows;
+				for(var i = rows.length - 1; i >= 0; i--) {
+					labels.push(rows[i].cells[0].innerText);
+					datas1.push(Number(rows[i].cells[3].innerText));
+					datas2.push(Number(rows[i].cells[4].innerText));
+					datas3.push(Number(rows[i].cells[5].innerText));
+					datas4.push(Number(rows[i].cells[6].innerText));
+					datas5.push(Number(rows[i].cells[7].innerText));
+					datas6.push(Number(rows[i].cells[8].innerText));
+					datas7.push(Number(rows[i].cells[9].innerText));
+					datas8.push(Number(rows[i].cells[10].innerText));
+					datas9.push(Number(rows[i].cells[11].innerText));
+					datas10.push(Number(rows[i].cells[12].innerText));
+					datas11.push(Number(rows[i].cells[13].innerText));
+				}
+
+				var ctx1 = document.getElementById("myChart1");
+				var myChart1 = new Chart(ctx1, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas1,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '收盘价'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx2 = document.getElementById("myChart2");
+				var myChart2 = new Chart(ctx2, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas2,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '开盘价'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx3 = document.getElementById("myChart3");
+				var myChart3 = new Chart(ctx3, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas3,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '最高价'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx4 = document.getElementById("myChart4");
+				var myChart4 = new Chart(ctx4, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas4,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '最低价'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx5 = document.getElementById("myChart5");
+				var myChart5 = new Chart(ctx5, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas5,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '前收盘'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx6 = document.getElementById("myChart6");
+				var myChart6 = new Chart(ctx6, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas6,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '涨跌额'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx7 = document.getElementById("myChart7");
+				var myChart7 = new Chart(ctx7, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas7,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '涨跌幅（%）'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx8 = document.getElementById("myChart8");
+				var myChart8 = new Chart(ctx8, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas8,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '成交量'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx9 = document.getElementById("myChart9");
+				var myChart9 = new Chart(ctx9, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas9,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '成交金额'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx10 = document.getElementById("myChart10");
+				var myChart10 = new Chart(ctx10, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas10,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '振幅（%）'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+
+				var ctx11 = document.getElementById("myChart11");
+				var myChart11 = new Chart(ctx11, {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas11,
+							lineTension: 0,
+							backgroundColor: 'transparent',
+							borderColor: '#007bff',
+							borderWidth: 2,
+							pointBackgroundColor: '#007bff'
+						}]
+					},
+					options: {
+						scales: {
+							xAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '日期'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}],
+							yAxes: [{
+								scaleLabel: {
+									display: true,
+									labelString: '量比（%）'
+								},
+								ticks: {
+									beginAtZero: false
+								}
+							}]
+						},
+						legend: {
+							display: false,
+						}
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

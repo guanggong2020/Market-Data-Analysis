@@ -56,14 +56,18 @@
 							<tr>
 								<th>股票数量</th>
 								<th>基金数量</th>
+								<th>上证数量</th>
+								<th>深证数量</th>
 							</tr>
 							</thead>
 							<tbody>
 							<tr>
-								<td id="gpc" style="display: none" th:text="${gpcount}"></td>
-								<td id="usc" style="display: none" th:text="${uscount}"></td>
-								<td th:text="${gpcount}+${uscount}"></td>
-								<td id="jjc" th:text="${jjcount}"></td>
+								<td id="gpc" style="display: none" th:text="${gpCount}"></td>
+								<td id="usc" style="display: none" th:text="${usCount}"></td>
+								<td th:text="${gpCount}+${usCount}"></td>
+								<td id="jjc" th:text="${jjCount}"></td>
+								<td id="szc" th:text="${shangzhengCount}"></td>
+								<td id="zsc" th:text="${shenzhengCount}"></td>
 							</tr>
 							</tbody>
 						</table>
@@ -80,8 +84,13 @@
 					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
 						<h1 class="h3">股票基金分布图</h1>
 					</div>
-					<div style="width:500px">
-						<canvas id="myChart" style="width:300px; height:300px;"></canvas>
+					<div style="width: 1200px">
+						<div style="width: 600px; float: left">
+							<canvas id="myChart1"></canvas>
+						</div>
+						<div style="width: 600px; float: left">
+							<canvas id="myChart2"></canvas>
+						</div>
 					</div>
 				</main>
 			</div>
@@ -112,8 +121,8 @@
 				datas.push(Number(gpcnt.innerText));
 				datas.push(Number(uscnt.innerText));
 				datas.push(Number(jjcnt.innerText));
-				var ctx = document.getElementById("myChart").getContext("2d");
-				var myChart = new Chart(ctx, {
+				var ctx1 = document.getElementById("myChart1").getContext("2d");
+				var myChart1 = new Chart(ctx1, {
 					type: 'pie',
 					data: {
 						labels: labels,
@@ -121,6 +130,27 @@
 							data: datas,
 							backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
 							hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"]
+						}]
+					}
+				});
+			});
+
+			$(function () {
+				var shangzhengCount = document.getElementById("szc");
+				var shenzhengCount = document.getElementById("zsc");
+				var labels = ["上证", "深证"];
+				var datas = [];
+				datas.push(Number(shangzhengCount.innerText));
+				datas.push(Number(shenzhengCount.innerText));
+				var ctx2 = document.getElementById("myChart2").getContext("2d");
+				var myChart2 = new Chart(ctx2, {
+					type: 'pie',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: datas,
+							backgroundColor: ["#ff8c31", "#4b5cc4"],
+							hoverBackgroundColor: ["#ff8c31", "#4b5cc4"]
 						}]
 					}
 				});

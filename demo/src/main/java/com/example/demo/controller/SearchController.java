@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dao.GuPiaoDataDao;
 import com.example.demo.dao.JiJinDataDao;
+import com.example.demo.dao.ShangZhengShenZhengDataDao;
 import com.example.demo.dao.USAStockDataDao;
 import com.example.demo.entities.GuPiaoData;
 import com.example.demo.entities.JiJinData;
+import com.example.demo.entities.ShangZhengShenZhengData;
 import com.example.demo.entities.USAStockData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,9 @@ public class SearchController {
 
     @Autowired
     private USAStockDataDao usaStockDataDao;
+
+    @Autowired
+    private ShangZhengShenZhengDataDao shangZhengShenZhengDataDao;
 
     @PostMapping("/search")
     public String listAll(@RequestParam("input") String input, Model model){
@@ -55,7 +60,7 @@ public class SearchController {
             model.addAttribute("dataList", dataList);
             return "search/USAStockListAll";
         }
-        else if (ss[0].equals("基金")){
+        else if (ss[0].equals("基金")) {
             if (ss.length == 1)
                 dataList = jiJinDataDao.findDataByRegex("", "comprehensive", pageNum, pageSize);
             else if (ss.length == 2)
@@ -64,6 +69,16 @@ public class SearchController {
                 dataList = jiJinDataDao.findDataByRegex(ss[1], ss[2], pageNum, pageSize);
             model.addAttribute("dataList", dataList);
             return "search/jijinListAll";
+        }
+        else if (ss[0].equals("上证") || ss[0].equals("深证")) {
+            if (ss.length == 1)
+                dataList = shangZhengShenZhengDataDao.findDataByRegex(ss[0], "comprehensive", pageNum, pageSize);
+            else if (ss.length == 2)
+                dataList = shangZhengShenZhengDataDao.findDataByRegex(ss[0] + "+" + ss[1], "comprehensive", pageNum, pageSize);
+            else
+                dataList = shangZhengShenZhengDataDao.findDataByRegex(ss[0] + "+" + ss[1], ss[2], pageNum, pageSize);
+            model.addAttribute("dataList", dataList);
+            return "search/shangzhengshenzhengListAll";
         }
         else
             return "redirect:/main.html";
@@ -127,5 +142,25 @@ public class SearchController {
         List<USAStockData> dataList = usaStockDataDao.findDataByCodeOrName(code, pageNum, pageSize);
         model.addAttribute("dataList", dataList);
         return "search/USAStockListByGraph";
+    }
+
+    @GetMapping("/search/shangzhengshenzheng/{code}")
+    public String listShangZhengOne(@PathVariable("code") String code, Model model){
+        int pageNum = 1;
+        int pageSize = 30;
+
+        List<ShangZhengShenZhengData> dataList = shangZhengShenZhengDataDao.findDataByCodeOrName(code, pageNum, pageSize);
+        model.addAttribute("dataList", dataList);
+        return "search/shangzhengshenzhengListOne";
+    }
+
+    @GetMapping("/search/shangzhengshenzheng/graph/{code}")
+    public String listShangZhengByGraph(@PathVariable("code") String code, Model model){
+        int pageNum = 1;
+        int pageSize = 30;
+
+        List<ShangZhengShenZhengData> dataList = shangZhengShenZhengDataDao.findDataByCodeOrName(code, pageNum, pageSize);
+        model.addAttribute("dataList", dataList);
+        return "search/shangzhengshenzhengListByGraph";
     }
 }

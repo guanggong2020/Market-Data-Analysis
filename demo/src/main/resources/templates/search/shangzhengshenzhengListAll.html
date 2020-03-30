@@ -59,7 +59,7 @@
 								<tr>
 									<th>时间</th>
 									<th>代码</th>
-									<th>股票名称</th>
+									<th>名称</th>
 									<th id="th1" onclick="SortTable(this)">收盘价↓</th>
 									<th id="th2" onclick="SortTable(this)">开盘价↓</th>
 									<th id="th3" onclick="SortTable(this)">最高价↓</th>
@@ -67,11 +67,10 @@
 									<th id="th5" onclick="SortTable(this)">前收盘↓</th>
 									<th id="th6" onclick="SortTable(this)">涨跌额↓</th>
 									<th id="th7" onclick="SortTable(this)">涨跌幅(%)↓</th>
-									<th id="th8" onclick="SortTable(this)">换手率(%)↓</th>
-									<th id="th9" onclick="SortTable(this)">成交量↓</th>
-									<th id="th10" onclick="SortTable(this)">成交金额↓</th>
-									<th id="th11" onclick="SortTable(this)">总市值(￥)↓</th>
-									<th id="th12" onclick="SortTable(this)">流通市值↓</th>
+									<th id="th8" onclick="SortTable(this)">成交量↓</th>
+									<th id="th9" onclick="SortTable(this)">成交金额↓</th>
+									<th id="th10" onclick="SortTable(this)">振幅(%)↓</th>
+									<th id="th11" onclick="SortTable(this)">量比↓</th>
 									<th>操作</th>
 								</tr>
 							</thead>
@@ -87,14 +86,13 @@
 									<td th:name="td7" th:text="${data.previousClose}"></td>
 									<td th:name="td8" th:text="${data.change}"></td>
 									<td th:name="td9" th:text="${data.quoteChange}"></td>
-									<td th:name="td10" th:text="${data.turnoverRate}"></td>
-									<td th:name="td11" th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
-									<td th:name="td12" th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
-									<td th:name="td13" th:text="${#numbers.formatInteger(data.totalMarketCapitalization, 1)}"></td>
-									<td th:name="td14" th:text="${#numbers.formatInteger(data.marketCapitalization, 1)}"></td>
-									<td th:name="td15">
-										<a class="btn btn-sm btn-primary" th:href="@{/search/gupiao/}+${data.code}">更多</a>
-										<a class="btn btn-sm btn-primary" th:href="@{/search/gupiao/graph/}+${data.code}">图形</a>
+									<td th:name="td10" th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
+									<td th:name="td11" th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
+									<td th:name="td12" th:text="${data.amplitude}"></td>
+									<td th:name="td13" th:text="${data.QRR}"></td>
+									<td th:name="td14">
+										<a class="btn btn-sm btn-primary" th:href="@{/search/shangzhengshenzheng/}+${data.code}">更多</a>
+										<a class="btn btn-sm btn-primary" th:href="@{/search/shangzhengshenzheng/graph/}+${data.code}">图形</a>
 									</td>
 								</tr>
 							</tbody>
@@ -155,7 +153,6 @@
 				var td12s = document.getElementsByName("td12");
 				var td13s = document.getElementsByName("td13");
 				var td14s = document.getElementsByName("td14");
-				var td15s = document.getElementsByName("td15");
 
 				var tdArray0 = [];
 				var tdArray1 = [];
@@ -172,7 +169,6 @@
 				var tdArray12 = [];
 				var tdArray13 = [];
 				var tdArray14 = [];
-				var tdArray15 = [];
 
 				for(var i = 0; i < td0s.length; i++) {
 					tdArray0.push(td0s[i].innerHTML);
@@ -205,22 +201,19 @@
 					tdArray9.push(parseFloat(td9s[i].innerHTML));
 				}
 				for(var i = 0; i < td10s.length; i++) {
-					tdArray10.push(parseFloat(td10s[i].innerHTML));
+					tdArray10.push(parseInt(td10s[i].innerHTML));
 				}
 				for(var i = 0; i < td11s.length; i++) {
 					tdArray11.push(parseInt(td11s[i].innerHTML));
 				}
 				for(var i = 0; i < td12s.length; i++) {
-					tdArray12.push(parseInt(td12s[i].innerHTML));
+					tdArray12.push(parseFloat(td12s[i].innerHTML));
 				}
 				for(var i = 0; i < td13s.length; i++) {
-					tdArray13.push(parseInt(td13s[i].innerHTML));
+					tdArray13.push(parseFloat(td13s[i].innerHTML));
 				}
 				for(var i = 0; i < td14s.length; i++) {
-					tdArray14.push(parseInt(td14s[i].innerHTML));
-				}
-				for(var i = 0; i < td15s.length; i++) {
-					tdArray15.push(td15s[i].innerHTML);
+					tdArray14.push(td14s[i].innerHTML);
 				}
 
 				var tds = document.getElementsByName("td"+(parseInt(obj.id.substr(2, obj.id.toLocaleString().length)) + 2));
@@ -260,7 +253,6 @@
 							document.getElementsByName("td12")[i].innerHTML = tdArray12[j];
 							document.getElementsByName("td13")[i].innerHTML = tdArray13[j];
 							document.getElementsByName("td14")[i].innerHTML = tdArray14[j];
-							document.getElementsByName("td15")[i].innerHTML = tdArray15[j];
 							orginArray[j] = null;
 							break;
 						}

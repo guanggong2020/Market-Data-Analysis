@@ -78,8 +78,6 @@ public class USAStockDataDaoImpl implements USAStockDataDao {
             else
                 query.addCriteria(Criteria.where("name").regex(pattern));
         }
-        else
-            query.addCriteria(Criteria.where("").is(input));
 
         if (selection == null || selection.length() == 0)
             selection = "comprehensive";
