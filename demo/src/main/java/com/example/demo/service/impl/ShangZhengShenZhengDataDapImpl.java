@@ -26,11 +26,28 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
     public List<ShangZhengShenZhengData> findDataByCodeOrName(String input, Integer pageNum, Integer pageSize) {
         if (input == null || input.trim().length() == 0)
             return new ArrayList<ShangZhengShenZhengData>();
+
+        String[] ss = input.split("\\+");
         Query query= new Query();
-        if (input.matches("\\d+"))
-            query.addCriteria(Criteria.where("code").is(input));
-        else
-            query.addCriteria(Criteria.where("name").is(input));
+
+        if (ss.length == 1) {
+            if (ss[0].matches("\\d+"))
+                query.addCriteria(Criteria.where("code").is(ss[0]));
+            else
+                query.addCriteria(Criteria.where("name").is(ss[0]));
+        }
+        else if (ss.length == 2) {
+            if (ss[0].equals("上证"))
+                query.addCriteria(Criteria.where("type").is(1));
+            else
+                query.addCriteria(Criteria.where("type").is(2));
+
+            if (ss[1].matches("\\d+"))
+                query.addCriteria(Criteria.where("code").is(ss[1]));
+            else
+                query.addCriteria(Criteria.where("name").is(ss[1]));
+        }
+
         query.with(Sort.by(Sort.Order.desc("date")));
         long recordTotal = mongoTemplate.count(query, ShangZhengShenZhengData.class, "shangzheng_shenzheng_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
@@ -48,11 +65,27 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
     public List<ShangZhengShenZhengData> findDataByCodeOrName(String input, String fromDate, String toDate, Integer pageNum, Integer pageSize) {
         if (input == null || input.trim().length() == 0)
             return new ArrayList<ShangZhengShenZhengData>();
+
+        String[] ss = input.split("\\+");
         Query query= new Query();
-        if (input.matches("\\d+"))
-            query.addCriteria(Criteria.where("code").is(input));
-        else
-            query.addCriteria(Criteria.where("name").is(input));
+
+        if (ss.length == 1) {
+            if (ss[0].matches("\\d+"))
+                query.addCriteria(Criteria.where("code").is(ss[0]));
+            else
+                query.addCriteria(Criteria.where("name").is(ss[0]));
+        }
+        else if (ss.length == 2) {
+            if (ss[0].equals("上证"))
+                query.addCriteria(Criteria.where("type").is(1));
+            else
+                query.addCriteria(Criteria.where("type").is(2));
+
+            if (ss[1].matches("\\d+"))
+                query.addCriteria(Criteria.where("code").is(ss[1]));
+            else
+                query.addCriteria(Criteria.where("name").is(ss[1]));
+        }
 
         query.addCriteria(Criteria.where("date").gte(fromDate).lte(toDate));
         query.with(Sort.by(Sort.Order.desc("date")));

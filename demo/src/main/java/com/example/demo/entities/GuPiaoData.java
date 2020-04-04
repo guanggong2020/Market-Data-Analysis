@@ -2,7 +2,7 @@ package com.example.demo.entities;
 
 import lombok.Data;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 

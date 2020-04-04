@@ -23,6 +23,9 @@ spring:
 
   mvc:
     date-format: yyyy-MM-dd
+    hiddenmethod:
+      filter:
+        enabled: true
 
   # 禁用缓存
   thymeleaf:

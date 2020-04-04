@@ -29,24 +29,15 @@ public class UserController {
     //来到员工添加页面
     @GetMapping("/user/add")
     public String toAddPage(Model model){
-        //来到添加页面,查出所有的部门，在页面显示
         return "user/add";
     }
 
     //员工添加
     //SpringMVC自动将请求参数和入参对象的属性进行一一绑定；要求请求参数的名字和javaBean入参的对象里面的属性名是一样的
     @PostMapping("/user/add")
-    public String addOrUpdateUser(User user){
-        //来到员工列表页面
-        System.out.println("保存的员工信息：" + user);
-        //保存员工
-        User u = userMapper.getUserById(user.getId());
-        if (u == null)
+    public String addUser(User user){
+        if (!user.getUserName().trim().equals("") && !user.getPassWord().trim().equals(""))
             userMapper.insertUser(user);
-        else
-            userMapper.updateUser(user);
-        // redirect: 表示重定向到一个地址  /代表当前项目路径
-        // forward: 表示转发到一个地址
         return "redirect:/users";
     }
 
@@ -59,9 +50,16 @@ public class UserController {
     }
 
     //员工删除
-    @GetMapping("/user/delete/{id}")
-    public String deleteEmployee(@PathVariable("id") Integer id){
+    @DeleteMapping("/user/delete/{id}")
+    public String deleteUser(@PathVariable("id") Integer id){
         userMapper.deleteUserById(id);
+        return "redirect:/users";
+    }
+
+    @PutMapping("/user/add")
+    public String updateUser(User user){
+        if (!user.getUserName().trim().equals("") && !user.getPassWord().trim().equals(""))
+            userMapper.updateUser(user);
         return "redirect:/users";
     }
 }

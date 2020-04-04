@@ -50,7 +50,7 @@
 		<div class="container-fluid">
 			<div class="row">
 				<!--引入侧边栏-->
-				<div th:replace="commons/bar::#sidebar"></div>
+				<div th:replace="commons/bar::#sidebar(activeUri='administrator/list.html')"></div>
 
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 					<h2><a class="btn btn-sm btn-success" href="administrator" th:href="@{/administrator/add}">用户添加</a></h2>
@@ -71,13 +71,16 @@
 									<td th:text="${administrator.passWord}"></td>
 									<td>
 										<a class="btn btn-sm btn-primary" th:href="@{/administrator/edit/}+${administrator.id}">编辑</a>
-										<a class="btn btn-sm btn-danger" th:href="@{/administrator/delete/}+${administrator.id}">删除</a>
+										<button th:attr="del_uri=@{/administrator/delete/}+${administrator.id}" class="btn btn-sm btn-danger deleteBtn">删除</button>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</main>
+				<form id="deleteEmpForm"  method="post">
+					<input type="hidden" name="_method" value="delete"/>
+				</form>
 			</div>
 		</div>
 
@@ -92,6 +95,13 @@
 		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
 		<script>
 			feather.replace()
+		</script>
+		<script>
+			$(".deleteBtn").click(function(){
+				//删除当前员工
+				$("#deleteEmpForm").attr("action",$(this).attr("del_uri")).submit();
+				return false;
+			});
 		</script>
 	</body>
 </html>

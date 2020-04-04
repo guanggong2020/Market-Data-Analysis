@@ -53,6 +53,16 @@
 				<div th:replace="commons/bar::#sidebar"></div>
 
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<form class="w-100" th:action="@{/search/us/graph}" method="post">
+						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<div style="width: 40%; float: left">
+							<label>起始日期：</label><input name="formDate" type="date" th:value="${date!=null}?${date}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${date!=null}?${date}">
+						</div>
+						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
+					</form>
+					<br>
+					<br>
 					<div class="table-responsive">
 						<table class="table table-striped table-sm" id="tab">
 							<tbody>

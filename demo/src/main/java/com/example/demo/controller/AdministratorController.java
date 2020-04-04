@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entities.Administrator;
+import com.example.demo.entities.User;
 import com.example.demo.mapper.AdministratorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -38,15 +40,9 @@ public class AdministratorController {
     //员工添加
     //SpringMVC自动将请求参数和入参对象的属性进行一一绑定；要求请求参数的名字和javaBean入参的对象里面的属性名是一样的
     @PostMapping("/administrator/add")
-    public String addOrUpdateUser(Administrator administrator){
-        //来到员工列表页面
-        System.out.println("保存的管理员信息：" + administrator);
-        //保存员工
-        Administrator a = administratorMapper.getAdministratorById(administrator.getId());
-        if (a == null)
+    public String addUser(Administrator administrator){
+        if (!administrator.getUserName().trim().equals("") && !administrator.getPassWord().trim().equals(""))
             administratorMapper.insertAdministrator(administrator);
-        else
-            administratorMapper.updateAdministrator(administrator);
         // redirect: 表示重定向到一个地址  /代表当前项目路径
         // forward: 表示转发到一个地址
         return "redirect:/administrators";
@@ -62,8 +58,15 @@ public class AdministratorController {
 
     // 管理员删除
     @GetMapping("/administrator/delete/{id}")
-    public String deleteEmployee(@PathVariable("id") Integer id){
+    public String deleteUser(@PathVariable("id") Integer id){
         administratorMapper.deleteAdministratorById(id);
+        return "redirect:/administrators";
+    }
+
+    @PutMapping("/administrator/add")
+    public String updateUser(Administrator administrator){
+        if (!administrator.getUserName().trim().equals("") && !administrator.getPassWord().trim().equals(""))
+            administratorMapper.updateAdministrator(administrator);
         return "redirect:/administrators";
     }
 }
