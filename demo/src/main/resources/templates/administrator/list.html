@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -47,7 +48,7 @@
 		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
 		<div th:replace="commons/bar::topbar"></div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" sec:authorize="hasRole('ADMIN')">
 			<div class="row">
 				<!--引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar(activeUri='administrator/list.html')"></div>
@@ -59,16 +60,16 @@
 							<thead>
 								<tr>
 									<th>#</th>
-									<th>userName</th>
-									<th>passWord</th>
+									<th>用户名</th>
+									<th>密码</th>
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="administrator:${administrators}">
 									<td th:text="${administrator.id}"></td>
-									<td th:text="${administrator.userName}"></td>
-									<td th:text="${administrator.passWord}"></td>
+									<td th:text="${administrator.username}"></td>
+									<td th:text="${administrator.password}"></td>
 									<td>
 										<a class="btn btn-sm btn-primary" th:href="@{/administrator/edit/}+${administrator.id}">编辑</a>
 										<button th:attr="del_uri=@{/administrator/delete/}+${administrator.id}" class="btn btn-sm btn-danger deleteBtn">删除</button>

@@ -1,27 +1,27 @@
 package com.example.demo;
 
-import com.example.demo.dao.GuPiaoDataDao;
-import com.example.demo.entities.GuPiaoData;
+import com.example.demo.entities.Person;
+import com.example.demo.mapper.PersonMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
-import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 class DemoApplicationTests {
 
     @Autowired
-    private GuPiaoDataDao guPiaoDataDao;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PersonMapper personMapper;
 
     @Test
-    void test() {
-        List<GuPiaoData> dataList = guPiaoDataDao.findDataByRegex(" ", "", 1, 100);
-
-        System.out.println(dataList.size());
-
-        for (GuPiaoData guPiaoData : dataList)
-            System.out.println(guPiaoData);
+    void contextLoads() {
+//        String username = "admin";
+//        String password = "admin";
+//        String roles = "ROLE_ROOT,ROLE_ADMIN,ROLE_USER";
+//        String encoderPassword = passwordEncoder.encode(password);
+//        personMapper.insertUser(new Person(1, username, encoderPassword, roles));
     }
 }

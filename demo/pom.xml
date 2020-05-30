@@ -21,6 +21,20 @@
 
     <dependencies>
 
+        <!-- 引入commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
+        </dependency>
+
+        <!-- 引入jsoup，用于防xss攻击 -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+
         <!-- 引入日志 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,64 +47,76 @@
             <artifactId>jquery</artifactId>
             <version>3.4.1</version>
         </dependency>
-        
+
+        <!-- 引入Thymeleaf模块 -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- 引入web模块 -->
+        <!-- 引入安全框架 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- 引入Web模块 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--引入bootstrap-->
+        <!--引入Bootstrap-->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
             <version>4.0.0</version>
         </dependency>
 
-        <!--引入druid数据源-->
-        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <!--引入Druid数据源-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.1.9</version>
         </dependency>
 
-        <!-- 引入mybatis -->
+        <!-- 引入MyBatis -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
 
-        <!-- 引入mysql驱动 -->
+        <!-- 引入MySQL驱动 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- 引入jdbc -->
+        <!-- 引入JDBC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
-        <!-- 引入mongodb -->
+        <!-- 引入MongoDB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
+        <!-- 引入Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
+        <!-- 引入测试 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -104,6 +130,7 @@
         </dependency>
     </dependencies>
 
+    <!-- 引入Spring Boot插件 -->
     <build>
         <plugins>
             <plugin>
@@ -112,5 +139,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

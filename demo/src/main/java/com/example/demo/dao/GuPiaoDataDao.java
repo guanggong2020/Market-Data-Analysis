@@ -9,4 +9,5 @@ public interface GuPiaoDataDao {
     List<GuPiaoData> findDataByCodeOrName(String input, String fromDate, String toDate, Integer pageNum, Integer pageSize);
     List<GuPiaoData> findDataByRegex(String input, String selection, Integer pageNum, Integer pageSize);
     Long guPiaoCount();
+    Long recordTotal(String input, String selection, Integer pageNum, Integer pageSize);
 }

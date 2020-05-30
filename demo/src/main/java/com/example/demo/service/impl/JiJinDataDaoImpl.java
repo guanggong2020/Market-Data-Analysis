@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dao.JiJinDataDao;
+import com.example.demo.entities.GuPiaoData;
 import com.example.demo.entities.JiJinData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -35,7 +36,10 @@ public class JiJinDataDaoImpl implements JiJinDataDao {
         long recordTotal = mongoTemplate.count(query, JiJinData.class, "jijin_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<JiJinData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, JiJinData.class, "jijin_data");
@@ -59,7 +63,10 @@ public class JiJinDataDaoImpl implements JiJinDataDao {
         long recordTotal = mongoTemplate.count(query, JiJinData.class, "jijin_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<JiJinData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, JiJinData.class, "jijin_data");
@@ -100,17 +107,55 @@ public class JiJinDataDaoImpl implements JiJinDataDao {
         long recordTotal = mongoTemplate.count(query, JiJinData.class, "jtd");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<JiJinData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, JiJinData.class, "jtd");
     }
 
     /**
-     * 用于统计股票数量
+     * 用于统计基金数量
      */
     @Override
     public Long jiJinCount() {
         return mongoTemplate.count(new Query(), JiJinData.class, "jtd");
+    }
+
+    /**
+     * 用于返回查询记录数
+     */
+    @Override
+    public Long recordTotal(String input, String selection, Integer pageNum, Integer pageSize) {
+        Query query = new Query();
+        if (input != null && input.length() > 0) {
+            Pattern pattern = Pattern.compile("^.*" + input + ".*$", Pattern.CASE_INSENSITIVE);
+            if (input.matches("\\d+"))
+                query.addCriteria(Criteria.where("code").regex(pattern));
+            else
+                query.addCriteria(Criteria.where("fundName").regex(pattern));
+        }
+
+        if (selection == null || selection.length() == 0)
+            selection = "comprehensive";
+
+        if (selection.equals("comprehensive"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("unitNetWorth"), Sort.Order.desc("cumulativeNetWorth"), Sort.Order.desc("growthRate")));
+        else if (selection.equals("unitNetWorthRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("unitNetWorth")));
+        else if (selection.equals("unitNetWorthDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("unitNetWorth")));
+        else if (selection.equals("cumulativeNetWorthRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("cumulativeNetWorth")));
+        else if (selection.equals("cumulativeNetWorthDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("cumulativeNetWorth")));
+        else if (selection.equals("growthRateRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("growthRate")));
+        else if (selection.equals("growthRateDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("growthRate")));
+
+        return mongoTemplate.count(query, JiJinData.class, "jtd");
     }
 }

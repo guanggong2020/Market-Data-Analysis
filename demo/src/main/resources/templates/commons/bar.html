@@ -1,40 +1,59 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>行情后台管理</title>
 </head>
 <body>
 <!--topbar-->
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">[[${session.loginUser}]]</a>
-<!--    <form class="form-search w-100" th:action="@{/search}" method="post" >-->
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar" sec:authorize="hasRole('USER')">
+<!--    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">[[${session.loginUser}]]</a>-->
+    <h2 class="navbar-brand col-sm-3 col-md-2 mr-0">
+        <svg class="bi bi-person-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+        </svg>
+        <span sec:authentication="name"></span>
+    </h2>
     <form class="form-search w-100" th:action="@{/search}" method="post">
-        <div style="width: 15%; float: left;">
-            <div style="width: 40%; float: left">
+        <div style="width: 22%; float: left">
+            <div style="width: 33%; float: left">
                 <label style="color: white">类型</label>
                 <select style="width: 100%; float: left;" name="selection01">
-                    <option>A股</option>
-                    <option>美股</option>
-                    <option>基金</option>
-                    <option>上证</option>
-                    <option>深证</option>
+                    <option th:selected="${selection01=='A股'}" th:value="A股">A股</option>
+                    <option th:selected="${selection01=='美股'}" th:value="美股">美股</option>
+                    <option th:selected="${selection01=='上证'}" th:value="上证">上证</option>
+                    <option th:selected="${selection01=='深证'}" th:value="深证">深证</option>
+                    <option th:selected="${selection01=='国内基金'}" th:value="国内基金">国内基金</option>
+                    <option th:selected="${selection01=='国外基金'}" th:value="国外基金">国外基金</option>
                 </select>
             </div>
-            <div style="width: 59%; float:left">
+            <div style="width: 66%; float:left">
                 <label style="color: white">排序</label>
                 <select style="width: 100%; float: right;" name="selection02">
-                    <option>综合</option>
-                    <option>收盘价升序</option>
-                    <option>收盘价降序</option>
-                    <option>涨跌额升序</option>
-                    <option>涨跌额降序</option>
-                    <option>涨跌幅升序</option>
-                    <option>涨跌幅降序</option>
+                    <option th:selected="${selection02=='综合'}" th:value="综合">综合</option>
+                    <option th:selected="${selection02=='股票-收盘价升序'}" th:value="股票-收盘价升序">股票-收盘价升序</option>
+                    <option th:selected="${selection02=='股票-收盘价降序'}" th:value="股票-收盘价降序">股票-收盘价降序</option>
+                    <option th:selected="${selection02=='股票-涨跌额升序'}" th:value="股票-涨跌额升序">股票-涨跌额升序</option>
+                    <option th:selected="${selection02=='股票-涨跌额降序'}" th:value="股票-涨跌额降序">股票-涨跌额降序</option>
+                    <option th:selected="${selection02=='股票-涨跌幅升序'}" th:value="股票-涨跌幅升序">股票-涨跌幅升序</option>
+                    <option th:selected="${selection02=='股票-涨跌幅降序'}" th:value="股票-涨跌幅降序">股票-涨跌幅降序</option>
+                    <option th:selected="${selection02=='国内基金-单位净值升序'}" th:value="国内基金-单位净值升序">国内基金-单位净值升序</option>
+                    <option th:selected="${selection02=='国内基金-单位净值降序'}" th:value="国内基金-单位净值降序">国内基金-单位净值降序</option>
+                    <option th:selected="${selection02=='国内基金-累计净值升序'}" th:value="国内基金-累计净值升序">国内基金-累计净值升序</option>
+                    <option th:selected="${selection02=='国内基金-累计净值降序'}" th:value="国内基金-累计净值降序">国内基金-累计净值降序</option>
+                    <option th:selected="${selection02=='国内基金-增长率升序'}" th:value="国内基金-增长率升序">国内基金-增长率升序</option>
+                    <option th:selected="${selection02=='国内基金-增长率降序'}" th:value="国内基金-增长率降序">国内基金-增长率降序</option>
+                    <option th:selected="${selection02=='国外基金-收盘价升序'}" th:value="国外基金-收盘价升序">国外基金-收盘价升序</option>
+                    <option th:selected="${selection02=='国外基金-收盘价降序'}" th:value="国外基金-收盘价降序">国外基金-收盘价降序</option>
+                    <option th:selected="${selection02=='国外基金-涨跌额升序'}" th:value="国外基金-涨跌额升序">国外基金-涨跌额升序</option>
+                    <option th:selected="${selection02=='国外基金-涨跌额降序'}" th:value="国外基金-涨跌额降序">国外基金-涨跌额降序</option>
+                    <option th:selected="${selection02=='国外基金-增长率升序'}" th:value="国外基金-增长率升序">国外基金-增长率升序</option>
+                    <option th:selected="${selection02=='国外基金-增长率降序'}" th:value="国外基金-增长率降序">国外基金-增长率降序</option>
                 </select>
             </div>
         </div>
-        <input class="form-control form-control-dark" type="text" name="input" placeholder="请输入 代码/名称  例如：广州" aria-label="Search" style="width: 80%; float: left" th:value="${input!=null}?${input}">
+        <input class="form-control form-control-dark" type="text" name="input" placeholder="请输入 代码/名称  例如：广州" aria-label="Search" style="width: 73%; float: left" th:value="${input!=null && input!='+'}?${input}">
         <button class="btn btn-lg" type="submit" style="width: 5%; float: left">
             <svg class="bi bi-search" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 011.415 0l3.85 3.85a1 1 0 01-1.414 1.415l-3.85-3.85a1 1 0 010-1.415z" clip-rule="evenodd"/>
@@ -43,14 +62,14 @@
         </button>
     </form>
     <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link active" href="#" th:href="@{/signout}" th:class="${activeUri=='signout'?'nav-link active':'nav-link'}">退出</a>
-        </li>
+        <form th:action="@{/logout}" method="post">
+            <input style="border: #343a40; background: #343a40; color: white" type="submit" value="退出"/>
+        </form>
     </ul>
 </nav>
 
 <!--sidebar-->
-<nav class="col-md-2 d-none d-md-block bg-light sidebar" id="sidebar">
+<nav class="col-md-2 d-none d-md-block bg-light sidebar" id="sidebar" sec:authorize="hasRole('USER')">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -63,7 +82,7 @@
                     主页<span class="sr-only">(current)</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                 <a class="nav-link active" href="#" th:href="@{/administrators}"
                    th:class="${activeUri=='administrator/list.html'?'nav-link active':'nav-link'}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users">
@@ -75,7 +94,7 @@
                     管理员管理
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                 <a class="nav-link active" href="#" th:href="@{/users}"
                 th:class="${activeUri=='user/list.html'?'nav-link active':'nav-link'}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users">
@@ -85,6 +104,17 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                     用户管理
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" th:href="@{/jobs}"
+                   th:class="${activeUri=='job/list.html'?'nav-link active':'nav-link'}">
+                    <svg class="bi bi-images" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M12.002 4h-10a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-10-1a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-10z" clip-rule="evenodd"/>
+                        <path d="M10.648 8.646a.5.5 0 0 1 .577-.093l1.777 1.947V14h-12v-1l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71z"/>
+                        <path fill-rule="evenodd" d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM4 2h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1v1a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2h1a1 1 0 0 1 1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    职业板块
                 </a>
             </li>
         </ul>

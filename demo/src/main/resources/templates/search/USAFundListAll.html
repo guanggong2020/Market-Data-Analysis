@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<title>行情后台管理</title>
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--引入抽取的topbar-->
+		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
+			<div class="row">
+				<!--引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<div class="table-responsive">
+						<table id="tab" class="table table-striped table-sm">
+							<thead>
+								<tr>
+									<th>时间</th>
+									<th>代码</th>
+									<th>基金名称</th>
+									<th>发行商</th>
+									<th id="th1" onclick="SortTable(this)">收盘价↓</th>
+									<th id="th2" onclick="SortTable(this)">增长率(%)↓</th>
+									<th id="th3" onclick="SortTable(this)">前收盘↓</th>
+									<th id="th4" onclick="SortTable(this)">涨跌额↓</th>
+									<th id="th5" onclick="SortTable(this)">一年涨跌幅(%)↓</th>
+									<th id="th6" onclick="SortTable(this)">周转率(%)↓</th>
+									<th id="th7" onclick="SortTable(this)">ROE(%)↓</th>
+									<th id="th8" onclick="SortTable(this)">ROA(%)↓</th>
+									<th id="th9" onclick="SortTable(this)">晨星评级↓</th>
+									<th id="th10" onclick="SortTable(this)">风险评级↓</th>
+									<th id="th11" onclick="SortTable(this)">过去十二个月收益率(%)↓</th>
+									<th id="th12" onclick="SortTable(this)">年初至今基金回报(%)↓</th>
+									<th id="th13" onclick="SortTable(this)">三个月基金回报(%)↓</th>
+									<th id="th14" onclick="SortTable(this)">一年基金回报(%)↓</th>
+									<th id="th15" onclick="SortTable(this)">三年基金回报(%)↓</th>
+									<th id="th16" onclick="SortTable(this)">五年基金回报(%)↓</th>
+									<th id="th17" onclick="SortTable(this)">总资产(M)↓</th>
+									<th id="th18" onclick="SortTable(this)">总市值(B)↓</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="data:${dataList}">
+									<td th:name="td0" th:text="${data.date}"></td>
+									<td th:name="td1" th:text="${data.code}"></td>
+									<td th:name="td2" th:text="${data.fundName}"></td>
+									<td th:name="td3" th:text="${data.company}"></td>
+									<td th:name="td4" th:text="${data.closingPrice}"></td>
+									<td th:name="td5" th:text="${data.growthRate}"></td>
+									<td th:name="td6" th:text="${data.previousClose}"></td>
+									<td th:name="td7" th:text="${data.change}"></td>
+									<td th:name="td8" th:text="${data.oneYearChange}"></td>
+									<td th:name="td9" th:text="${data.turnover}"></td>
+									<td th:name="td10" th:text="${data.ROE}"></td>
+									<td th:name="td11" th:text="${data.ROA}"></td>
+									<td th:name="td12" th:text="${data.morningstarRating}"></td>
+									<td th:name="td13" th:text="${data.RiskRating}"></td>
+									<td th:name="td14" th:text="${data.TTMYield}"></td>
+									<td th:name="td15" th:text="${data.YTDFundReturn}"></td>
+									<td th:name="td16" th:text="${data.threeMonthFundReturn}"></td>
+									<td th:name="td17" th:text="${data.oneYearFundReturn}"></td>
+									<td th:name="td18" th:text="${data.threeYearFundReturn}"></td>
+									<td th:name="td19" th:text="${data.fiveYearFundReturn}"></td>
+									<td th:name="td20" th:text="${#strings.substring(data.totalAssets, 0, data.totalAssets.length()-1)}"></td>
+									<td th:name="td21" th:text="${#strings.substring(data.totalMarketCapitalization, 0, data.totalMarketCapitalization.length()-1)}"></td>
+									<td th:name="td22">
+										<a class="btn btn-sm btn-primary" th:href="@{/search/uf/}+${data.code}+'/'+${selection01}+'/'+${selection02}">更多</a>
+										<a class="btn btn-sm btn-primary" th:href="@{/search/uf/graph/}+${data.code}+'/'+${selection01}+'/'+${selection02}">图形</a>
+									</td>
+									<td style="display: none" th:name="t1" th:text="${selection01}"></td>
+									<td style="display: none" th:name="t2" th:text="${selection02}"></td>
+									<td style="display: none" th:name="t3" th:text="${input}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<br>
+					<!-- 分页功能 -->
+					<div style="float: right">
+						<ul class="pagination">
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${1}">首页</a></li>
+							<li class="page-item" th:if="(${pageNum}>1)">
+								<a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}-1)" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<li class="page-item active"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${pageNum}" th:if="(${pageNum}<${pageTotal})">[[${pageNum}]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+1)" th:if="(${pageNum}+1<${pageTotal})">[[(${pageNum}+1)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+2)" th:if="(${pageNum}+2<${pageTotal})">[[(${pageNum}+2)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+3)" th:if="(${pageNum}+3<${pageTotal})">[[(${pageNum}+3)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+4)" th:if="(${pageNum}+4<${pageTotal})">[[(${pageNum}+4)]]</a></li>
+							<li class="page-item" th:if="${pageNum}<${pageTotal}">
+								<a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+1)" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${pageTotal}">末页</a></li>
+							<li class="page-item" style="float: left">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;去第&nbsp;<input id="whichPage" style="width: 50px" type="text" th:value="${pageNum}"/>&nbsp;页
+								&nbsp;&nbsp;<button class="btn-sm btn-info putBtn">确定</button>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共&nbsp;<input style="width: 50px" type="text" th:value="${pageTotal!=null}?${pageTotal}"/>&nbsp;页
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共&nbsp;<input style="width: 50px" type="text" th:value="${recordTotal!=null}?${recordTotal}"/>&nbsp;条
+							</li>
+						</ul>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- 选择特定页面 -->
+		<script type="text/javascript">
+			$(".putBtn").click(function() {
+				var selection01 = document.getElementsByName("t1");
+				var selection02 = document.getElementsByName("t2");
+				var input = document.getElementsByName("t3");
+				var whichPage = document.getElementById("whichPage").value;
+				var url = '/search/'+selection01[0].innerHTML+'/'+selection02[0].innerHTML+'/'+input[0].innerHTML+'/'+whichPage;
+				setTimeout(location.href=url, 0);
+			});
+		</script>
+
+		<!--table属性点击排序js-->
+		<script type="text/javascript">
+			function sortNumberAsc(a, b) {
+				if(a < b) {
+					return -1;
+				}
+				if(a > b) {
+					return 1;
+				}
+				return 0;
+			}
+
+			function sortNumberDesc(a, b) {
+				if(a < b) {
+					return 1;
+				}
+				if(a > b) {
+					return -1;
+				}
+				return 0;
+			}
+
+			function SortTable(obj) {
+				var td0s = document.getElementsByName("td0");
+				var td1s = document.getElementsByName("td1");
+				var td2s = document.getElementsByName("td2");
+				var td3s = document.getElementsByName("td3");
+				var td4s = document.getElementsByName("td4");
+				var td5s = document.getElementsByName("td5");
+				var td6s = document.getElementsByName("td6");
+				var td7s = document.getElementsByName("td7");
+				var td8s = document.getElementsByName("td8");
+				var td9s = document.getElementsByName("td9");
+				var td10s = document.getElementsByName("td10");
+				var td11s = document.getElementsByName("td11");
+				var td12s = document.getElementsByName("td12");
+				var td13s = document.getElementsByName("td13");
+				var td14s = document.getElementsByName("td14");
+				var td15s = document.getElementsByName("td15");
+				var td16s = document.getElementsByName("td16");
+				var td17s = document.getElementsByName("td17");
+				var td18s = document.getElementsByName("td18");
+				var td19s = document.getElementsByName("td19");
+				var td20s = document.getElementsByName("td20");
+				var td21s = document.getElementsByName("td21");
+				var td22s = document.getElementsByName("td22");
+
+				var tdArray0 = [];
+				var tdArray1 = [];
+				var tdArray2 = [];
+				var tdArray3 = [];
+				var tdArray4 = [];
+				var tdArray5 = [];
+				var tdArray6 = [];
+				var tdArray7 = [];
+				var tdArray8 = [];
+				var tdArray9 = [];
+				var tdArray10 = [];
+				var tdArray11 = [];
+				var tdArray12 = [];
+				var tdArray13 = [];
+				var tdArray14 = [];
+				var tdArray15 = [];
+				var tdArray16 = [];
+				var tdArray17 = [];
+				var tdArray18 = [];
+				var tdArray19 = [];
+				var tdArray20 = [];
+				var tdArray21 = [];
+				var tdArray22 = [];
+
+				for(var i = 0; i < td0s.length; i++) {
+					tdArray0.push(td0s[i].innerHTML);
+				}
+				for(var i = 0; i < td1s.length; i++) {
+					tdArray1.push(td1s[i].innerHTML);
+				}
+				for(var i = 0; i < td2s.length; i++) {
+					tdArray2.push(td2s[i].innerHTML);
+				}
+				for(var i = 0; i < td3s.length; i++) {
+					tdArray3.push(td3s[i].innerHTML);
+				}
+				for(var i = 0; i < td4s.length; i++) {
+					tdArray4.push(parseFloat(td4s[i].innerHTML));
+				}
+				for(var i = 0; i < td5s.length; i++) {
+					tdArray5.push(parseFloat(td5s[i].innerHTML));
+				}
+				for(var i = 0; i < td6s.length; i++) {
+					tdArray6.push(parseFloat(td6s[i].innerHTML));
+				}
+				for(var i = 0; i < td7s.length; i++) {
+					tdArray7.push(parseFloat(td7s[i].innerHTML));
+				}
+				for(var i = 0; i < td8s.length; i++) {
+					tdArray8.push(parseFloat(td8s[i].innerHTML));
+				}
+				for(var i = 0; i < td9s.length; i++) {
+					tdArray9.push(parseFloat(td9s[i].innerHTML));
+				}
+				for(var i = 0; i < td10s.length; i++) {
+					tdArray10.push(parseFloat(td10s[i].innerHTML));
+				}
+				for(var i = 0; i < td11s.length; i++) {
+					tdArray11.push(parseFloat(td11s[i].innerHTML));
+				}
+				for(var i = 0; i < td12s.length; i++) {
+					tdArray12.push(parseFloat(td12s[i].innerHTML));
+				}
+				for(var i = 0; i < td13s.length; i++) {
+					tdArray13.push(parseFloat(td13s[i].innerHTML));
+				}
+				for(var i = 0; i < td14s.length; i++) {
+					tdArray14.push(parseFloat(td14s[i].innerHTML));
+				}
+				for(var i = 0; i < td15s.length; i++) {
+					tdArray15.push(parseFloat(td15s[i].innerHTML));
+				}
+				for(var i = 0; i < td16s.length; i++) {
+					tdArray16.push(parseFloat(td16s[i].innerHTML));
+				}
+				for(var i = 0; i < td17s.length; i++) {
+					tdArray17.push(parseFloat(td17s[i].innerHTML));
+				}
+				for(var i = 0; i < td18s.length; i++) {
+					tdArray18.push(parseFloat(td18s[i].innerHTML));
+				}
+				for(var i = 0; i < td19s.length; i++) {
+					tdArray19.push(parseFloat(td19s[i].innerHTML));
+				}
+				for(var i = 0; i < td20s.length; i++) {
+					tdArray20.push(parseFloat(td20s[i].innerHTML));
+				}
+				for(var i = 0; i < td21s.length; i++) {
+					tdArray21.push(parseFloat(td21s[i].innerHTML));
+				}
+				for(var i = 0; i < td22s.length; i++) {
+					tdArray22.push(td22s[i].innerHTML);
+				}
+
+				var tds = document.getElementsByName("td"+(parseInt(obj.id.substr(2, obj.id.toLocaleString().length)) + 3));
+				var columnArray = [];
+				for(var i = 0; i < tds.length; i++) {
+						columnArray.push(parseFloat(tds[i].innerHTML));
+				}
+				var orginArray = [];
+				for(var i = 0; i < columnArray.length; i++) {
+					orginArray.push(columnArray[i]);
+				}
+				console.log(columnArray);
+				if(obj.className == "asc"){
+					columnArray.sort(sortNumberAsc);               //排序后的新值
+					obj.className = "desc";
+				}
+				else {
+					columnArray.sort(sortNumberDesc);               //排序后的新值
+					obj.className = "asc";
+				}
+				console.log(columnArray);
+				for(var i = 0; i < columnArray.length; i++) {
+					for(var j = 0; j < orginArray.length; j++) {
+						if(orginArray[j] == columnArray[i]){
+							document.getElementsByName("td0")[i].innerHTML = tdArray0[j];
+							document.getElementsByName("td1")[i].innerHTML = tdArray1[j];
+							document.getElementsByName("td2")[i].innerHTML = tdArray2[j];
+							document.getElementsByName("td3")[i].innerHTML = tdArray3[j];
+							document.getElementsByName("td4")[i].innerHTML = tdArray4[j];
+							document.getElementsByName("td5")[i].innerHTML = tdArray5[j];
+							document.getElementsByName("td6")[i].innerHTML = tdArray6[j];
+							document.getElementsByName("td7")[i].innerHTML = tdArray7[j];
+							document.getElementsByName("td8")[i].innerHTML = tdArray8[j];
+							document.getElementsByName("td9")[i].innerHTML = tdArray9[j];
+							document.getElementsByName("td10")[i].innerHTML = tdArray10[j];
+							document.getElementsByName("td11")[i].innerHTML = tdArray11[j];
+							document.getElementsByName("td12")[i].innerHTML = tdArray12[j];
+							document.getElementsByName("td13")[i].innerHTML = tdArray13[j];
+							document.getElementsByName("td14")[i].innerHTML = tdArray14[j];
+							document.getElementsByName("td15")[i].innerHTML = tdArray15[j];
+							document.getElementsByName("td16")[i].innerHTML = tdArray16[j];
+							document.getElementsByName("td17")[i].innerHTML = tdArray17[j];
+							document.getElementsByName("td18")[i].innerHTML = tdArray18[j];
+							document.getElementsByName("td19")[i].innerHTML = tdArray19[j];
+							document.getElementsByName("td20")[i].innerHTML = tdArray20[j];
+							document.getElementsByName("td21")[i].innerHTML = tdArray21[j];
+							document.getElementsByName("td22")[i].innerHTML = tdArray22[j];
+							orginArray[j] = null;
+							break;
+						}
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

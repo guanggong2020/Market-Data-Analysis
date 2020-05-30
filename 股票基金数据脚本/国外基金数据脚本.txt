@@ -1,0 +1,178 @@
+// 连接mongodb
+conn = new Mongo("127.0.0.1")
+
+// 认证
+db = conn.getDB("admin")
+db.auth("admin","@Admin123")
+
+// 选择数据库
+db = conn.getDB("stock")
+
+// 国外基金数据抽取
+db.getCollection("USA_fund_daily_data").aggregate([
+	{$project:{
+		"date":{$substr:["$date",0,-1]},
+		"code":{$substr:["$code",0,-1]},
+		"fundName":{$substr:["$fundName",0,-1]},
+		"company":{$substr:["$company",0,-1]},
+		"closingPrice":{$substr:["$closingPrice",0,-1]},
+		"growthRate":{$substr:["$growthRate",0,-1]},
+		"previousClose":{$substr:["$previousClose",0,-1]},
+		"change":{$substr:["$change",0,-1]},
+		"OneYearChange":{$substr:["$OneYearChange",0,-1]},
+		"turnover":{$substr:["$turnover",0,-1]},
+		"ROE":{$substr:["$ROE",0,-1]},
+		"ROA":{$substr:["$ROA",0,-1]},
+		"MorningstarRating":{$substr:["$MorningstarRating",0,-1]},
+		"RiskRating":{$substr:["$RiskRating",0,-1]},
+		"TTMYield":{$substr:["$TTMYield",0,-1]},
+		"YTDFundReturn":{$substr:["$YTDFundReturn",0,-1]},
+		"ThreeMonthFundReturn":{$substr:["$ThreeMonthFundReturn",0,-1]},
+		"OneYearFundReturn":{$substr:["$OneYearFundReturn",0,-1]},
+		"ThreeYearFundReturn":{$substr:["$ThreeYearFundReturn",0,-1]},
+		"FiveYearFundReturn":{$substr:["$FiveYearFundReturn",0,-1]},
+		"TotalAssets":{$substr:["$TotalAssets",0,-1]},
+		"totalMarketCapitalization":{$substr:["$totalMarketCapitalization",0,-1]}
+		}},
+	{$out:"fund_test"}
+])
+
+// 国外基金数据转换
+db.getCollection("fund_test").find({"closingPrice":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{closingPrice: Number(x.closingPrice)}})
+})
+db.getCollection("fund_test").find({"growthRate":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{growthRate: Number(x.growthRate)}})
+})
+db.getCollection("fund_test").find({"previousClose":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{previousClose: Number(x.previousClose)}})
+})
+db.getCollection("fund_test").find({"change":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{change: Number(x.change)}})
+})
+db.getCollection("fund_test").find({"OneYearChange":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{OneYearChange: Number(x.OneYearChange)}})
+})
+db.getCollection("fund_test").find({"turnover":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{turnover: Number(x.turnover)}})
+})
+db.getCollection("fund_test").find({"ROE":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ROE: Number(x.ROE)}})
+})
+db.getCollection("fund_test").find({"ROA":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ROA: Number(x.ROA)}})
+})
+db.getCollection("fund_test").find({"MorningstarRating":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{MorningstarRating: Number(x.MorningstarRating)}})
+})
+db.getCollection("fund_test").find({"RiskRating":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{RiskRating: Number(x.RiskRating)}})
+})
+db.getCollection("fund_test").find({"TTMYield":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{TTMYield: Number(x.TTMYield)}})
+})
+db.getCollection("fund_test").find({"YTDFundReturn":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{YTDFundReturn: Number(x.YTDFundReturn)}})
+})
+db.getCollection("fund_test").find({"ThreeMonthFundReturn":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ThreeMonthFundReturn: Number(x.ThreeMonthFundReturn)}})
+})
+db.getCollection("fund_test").find({"OneYearFundReturn":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{OneYearFundReturn: Number(x.OneYearFundReturn)}})
+})
+db.getCollection("fund_test").find({"ThreeYearFundReturn":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ThreeYearFundReturn: Number(x.ThreeYearFundReturn)}})
+})
+db.getCollection("fund_test").find({"FiveYearFundReturn":{$type:2}}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{FiveYearFundReturn: Number(x.FiveYearFundReturn)}})
+})
+
+// 国外基金数据清洗
+db.getCollection("fund_test").find({"closingPrice":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{closingPrice:0}})
+})
+db.getCollection("fund_test").find({"growthRate":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{growthRate:0}})
+})
+db.getCollection("fund_test").find({"previousClose":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{previousClose:0}})
+})
+db.getCollection("fund_test").find({"change":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{change:0}})
+})
+db.getCollection("fund_test").find({"OneYearChange":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{OneYearChange:0}})
+})
+db.getCollection("fund_test").find({"turnover":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{turnover:0}})
+})
+db.getCollection("fund_test").find({"ROE":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ROE:0}})
+})
+db.getCollection("fund_test").find({"ROA":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ROA:0}})
+})
+db.getCollection("fund_test").find({"MorningstarRating":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{MorningstarRating:0}})
+})
+db.getCollection("fund_test").find({"RiskRating":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{RiskRating:0}})
+})
+db.getCollection("fund_test").find({"TTMYield":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{TTMYield:0}})
+})
+db.getCollection("fund_test").find({"YTDFundReturn":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{YTDFundReturn:0}})
+})
+db.getCollection("fund_test").find({"ThreeMonthFundReturn":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ThreeMonthFundReturn:0}})
+})
+db.getCollection("fund_test").find({"OneYearFundReturn":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{OneYearFundReturn:0}})
+})
+db.getCollection("fund_test").find({"ThreeYearFundReturn":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{ThreeYearFundReturn:0}})
+})
+db.getCollection("fund_test").find({"FiveYearFundReturn":NaN}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{FiveYearFundReturn:0}})
+})
+db.getCollection("fund_test").find({"TotalAssets":"N/A"}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{TotalAssets:"0M"}})
+})
+db.getCollection("fund_test").find({"totalMarketCapitalization":"N/A"}).forEach(function(x){
+	db.getCollection("fund_test").updateOne({_id:x._id},{$set:{totalMarketCapitalization:"0B"}})
+})
+
+// 国外基金数据加载
+db.fund_test.find().forEach(function(d){
+	db.getSiblingDB("bishe").USA_fund_data.insert(d)
+})
+
+// 临时国外基金集合清除
+db.fund_test.drop()
+db.USA_fund_daily_data.deleteMany({})
+
+// 选择数据库
+db = conn.getDB("bishe")
+
+// 获取每支国外基金的最新数据
+db.USA_fund.drop()
+db.USA_fund_latest_daily_data.drop()
+db.USA_fund_data.aggregate([
+	{$group:{_id:"$code"}},
+	{$out:"USA_fund"}
+])
+db.USA_fund.find({}).forEach(
+    function(x) {
+        db.USA_fund_data.find({"code":x._id}).sort({date:-1}).limit(1).forEach(
+            function(y) {
+                db.USA_fund_latest_daily_data.insert(y)
+            }
+        )
+    }
+)
+
+// 给集合USA_fund_latest_daily_data建立索引
+db.USA_fund_latest_daily_data.createIndex({"code":1})
+db.USA_fund_latest_daily_data.createIndex({"fundName":1})
+db.USA_fund_latest_daily_data.createIndex({"date":-1,"closingPrice":-1,"change":-1,"growthRate":-1})

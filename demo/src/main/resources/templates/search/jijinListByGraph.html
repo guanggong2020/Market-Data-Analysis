@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -9,6 +10,7 @@
 		<meta name="author" content="">
 
 		<title>行情后台管理</title>
+
 		<!-- Bootstrap core CSS -->
 		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
 
@@ -47,7 +49,7 @@
 		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
 		<div th:replace="commons/bar::topbar"></div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
 			<div class="row">
 				<!--引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar"></div>
@@ -55,9 +57,11 @@
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 					<form class="w-100" th:action="@{/search/jijin/graph}" method="post">
 						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<input type="hidden" name="selection01" th:if="${selection01!=null}" th:value="${selection01}">
+						<input type="hidden" name="selection02" th:if="${selection02!=null}" th:value="${selection02}">
 						<div style="width: 40%; float: left">
-							<label>起始日期：</label><input name="formDate" type="date" th:value="${date!=null}?${date}">
-							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${date!=null}?${date}">
+							<label>起始日期：</label><input name="fromDate" type="date" th:value="${fromDate!=null}?${#dates.format(fromDate,'yyyy-MM-dd')}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${toDate!=null}?${#dates.format(toDate,'yyyy-MM-dd')}">
 						</div>
 						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
 					</form>
@@ -88,9 +92,150 @@
 					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
 						<h1 class="h2" th:text="${dataList.get(0).fundName}"></h1>
 					</div>
-					<canvas class="my-4 chartjs-render-monitor" id="myChart1" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
-					<canvas class="my-4 chartjs-render-monitor" id="myChart2" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
-					<canvas class="my-4 chartjs-render-monitor" id="myChart3" width="1076" height="454" style="display: block; width: 1076px; height: 454px;"></canvas>
+					<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+					<div id="myChart1" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart2" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart3" style="width: 1200px; height: 500px;"></div>
+
+					<script type="text/javascript">
+						var labels = [];
+						var datas1 = [];
+						var datas2 = [];
+						var datas3 = [];
+						var tb = document.getElementById('tab');
+						var rows = tb.rows;
+						for(var i = rows.length - 1; i >= 0; i--) {
+							labels.push(rows[i].cells[0].innerText);
+							datas1.push(Number(rows[i].cells[3].innerText));
+							datas2.push(Number(rows[i].cells[4].innerText));
+							datas3.push(Number(rows[i].cells[5].innerText));
+						}
+
+						var myChart1 = echarts.init(document.getElementById("myChart1"));
+						option1 = {
+							title: {
+								text: '单位净值趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['单位净值']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '单位净值',
+									type: 'line',
+									stack: '总量',
+									data: datas1
+								}
+							]
+						};
+						myChart1.setOption(option1);
+
+						var myChart2 = echarts.init(document.getElementById("myChart2"));
+						option2 = {
+							title: {
+								text: '累计净值趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['累计净值']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '累计净值',
+									type: 'line',
+									stack: '总量',
+									data: datas2
+								}
+							]
+						};
+						myChart2.setOption(option2);
+
+						var myChart3 = echarts.init(document.getElementById("myChart3"));
+						option3 = {
+							title: {
+								text: '增长率趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['增长率（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '增长率（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas3
+								}
+							]
+						};
+						myChart3.setOption(option3);
+					</script>
 				</main>
 			</div>
 		</div>
@@ -110,144 +255,5 @@
 
 		<!-- Graphs -->
 		<script type="text/javascript" src="asserts/js/Chart.min.js" th:src="@{/asserts/js/Chart.min.js}"></script>
-		<script type="text/javascript">
-			$(function () {
-				var labels = [];
-				var datas1 = [];
-				var datas2 = [];
-				var datas3 = [];
-				var tb = document.getElementById('tab');
-				var rows = tb.rows;
-				for(var i = rows.length - 1; i >= 0; i--) {
-					labels.push(rows[i].cells[0].innerText);
-					datas1.push(Number(rows[i].cells[3].innerText));
-					datas2.push(Number(rows[i].cells[4].innerText));
-					datas3.push(Number(rows[i].cells[5].innerText));
-				}
-
-				var ctx1 = document.getElementById("myChart1");
-				var myChart1 = new Chart(ctx1, {
-					type: 'line',
-					data: {
-						labels: labels,
-						datasets: [{
-							data: datas1,
-							lineTension: 0,
-							backgroundColor: 'transparent',
-							borderColor: '#007bff',
-							borderWidth: 2,
-							pointBackgroundColor: '#007bff'
-						}]
-					},
-					options: {
-						scales: {
-							xAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '日期'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}],
-							yAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '单位净值'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}]
-						},
-						legend: {
-							display: false,
-						}
-					}
-				});
-
-				var ctx2 = document.getElementById("myChart2");
-				var myChart2 = new Chart(ctx2, {
-					type: 'line',
-					data: {
-						labels: labels,
-						datasets: [{
-							data: datas2,
-							lineTension: 0,
-							backgroundColor: 'transparent',
-							borderColor: '#007bff',
-							borderWidth: 2,
-							pointBackgroundColor: '#007bff'
-						}]
-					},
-					options: {
-						scales: {
-							xAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '日期'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}],
-							yAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '累计净值'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}]
-						},
-						legend: {
-							display: false,
-						}
-					}
-				});
-
-				var ctx3 = document.getElementById("myChart3");
-				var myChart3 = new Chart(ctx3, {
-					type: 'line',
-					data: {
-						labels: labels,
-						datasets: [{
-							data: datas3,
-							lineTension: 0,
-							backgroundColor: 'transparent',
-							borderColor: '#007bff',
-							borderWidth: 2,
-							pointBackgroundColor: '#007bff'
-						}]
-					},
-					options: {
-						scales: {
-							xAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '日期'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}],
-							yAxes: [{
-								scaleLabel: {
-									display: true,
-									labelString: '增长率（%）'
-								},
-								ticks: {
-									beginAtZero: false
-								}
-							}]
-						},
-						legend: {
-							display: false,
-						}
-					}
-				});
-			});
-		</script>
 	</body>
 </html>

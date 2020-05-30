@@ -36,7 +36,10 @@ public class GuPiaoDataDaoImpl implements GuPiaoDataDao {
         long recordTotal = mongoTemplate.count(query, GuPiaoData.class, "gupiao_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<GuPiaoData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, GuPiaoData.class, "gupiao_data");
@@ -60,7 +63,10 @@ public class GuPiaoDataDaoImpl implements GuPiaoDataDao {
         long recordTotal = mongoTemplate.count(query, GuPiaoData.class, "gupiao_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<GuPiaoData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, GuPiaoData.class, "gupiao_data");
@@ -101,7 +107,10 @@ public class GuPiaoDataDaoImpl implements GuPiaoDataDao {
         long recordTotal = mongoTemplate.count(query, GuPiaoData.class, "gtd");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<GuPiaoData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, GuPiaoData.class, "gtd");
@@ -113,5 +122,40 @@ public class GuPiaoDataDaoImpl implements GuPiaoDataDao {
     @Override
     public Long guPiaoCount() {
         return mongoTemplate.count(new Query(), GuPiaoData.class, "gtd");
+    }
+
+    /**
+     * 用于返回查询记录数
+     */
+    @Override
+    public Long recordTotal(String input, String selection, Integer pageNum, Integer pageSize) {
+        Query query = new Query();
+        if (input != null && input.length() > 0) {
+            Pattern pattern = Pattern.compile("^.*" + input + ".*$", Pattern.CASE_INSENSITIVE);
+            if (input.matches("\\d+"))
+                query.addCriteria(Criteria.where("code").regex(pattern));
+            else
+                query.addCriteria(Criteria.where("name").regex(pattern));
+        }
+
+        if (selection == null || selection.length() == 0)
+            selection = "comprehensive";
+
+        if (selection.equals("comprehensive"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("closingPrice"), Sort.Order.desc("change"), Sort.Order.desc("quoteChange")));
+        else if (selection.equals("closingPriceRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("closingPrice")));
+        else if (selection.equals("closingPriceDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("closingPrice")));
+        else if (selection.equals("changeRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("change")));
+        else if (selection.equals("changeDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("change")));
+        else if (selection.equals("quoteChangeRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("quoteChange")));
+        else if (selection.equals("quoteChangeDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("quoteChange")));
+
+        return mongoTemplate.count(query, GuPiaoData.class, "gtd");
     }
 }

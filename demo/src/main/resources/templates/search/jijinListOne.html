@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -47,7 +48,7 @@
 		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
 		<div th:replace="commons/bar::topbar"></div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
 			<div class="row">
 				<!--引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar"></div>
@@ -55,9 +56,11 @@
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 					<form class="w-100" th:action="@{/search/jijin}" method="post">
 						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<input type="hidden" name="selection01" th:if="${selection01!=null}" th:value="${selection01}">
+						<input type="hidden" name="selection02" th:if="${selection02!=null}" th:value="${selection02}">
 						<div style="width: 40%; float: left">
-							<label>起始日期：</label><input name="formDate" type="date" th:value="${date!=null}?${date}">
-							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${date!=null}?${date}">
+							<label>起始日期：</label><input name="fromDate" type="date" th:value="${fromDate!=null}?${#dates.format(fromDate,'yyyy-MM-dd')}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${toDate!=null}?${#dates.format(toDate,'yyyy-MM-dd')}">
 						</div>
 						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
 					</form>

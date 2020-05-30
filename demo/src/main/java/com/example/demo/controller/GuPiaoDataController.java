@@ -31,7 +31,7 @@ public class GuPiaoDataController {
     }
 
     @RequestMapping("/findDataByRegex/{input}/{selection}/{pageNum}/{pageSize}")
-    public List<GuPiaoData> findByRegex(@PathVariable("input") String input, @PathVariable("selection") String selection, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, Map<String, Object> map, HttpSession session) {
+    public List<GuPiaoData> findByRegex(@PathVariable("input") String input, @PathVariable("selection") String selection, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
         List<GuPiaoData> dataList = guPiaoDataDao.findDataByRegex(input, selection, pageNum, pageSize);
         return dataList;
     }

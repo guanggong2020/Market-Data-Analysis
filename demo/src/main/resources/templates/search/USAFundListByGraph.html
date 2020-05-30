@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>行情后台管理</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--引入topbar-->
+		<div th:replace="commons/bar::topbar"></div>
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
+			<div class="row">
+				<!--引入sidebar-->
+				<div th:replace="commons/bar::#sidebar"></div>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<form class="w-100" th:action="@{/search/uf/graph}" method="post">
+						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<input type="hidden" name="selection01" th:if="${selection01!=null}" th:value="${selection01}">
+						<input type="hidden" name="selection02" th:if="${selection02!=null}" th:value="${selection02}">
+						<div style="width: 40%; float: left">
+							<label>起始日期：</label><input name="fromDate" type="date" th:value="${fromDate!=null}?${#dates.format(fromDate,'yyyy-MM-dd')}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${toDate!=null}?${#dates.format(toDate,'yyyy-MM-dd')}">
+						</div>
+						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
+					</form>
+					<br>
+					<br>
+					<div class="table-responsive">
+						<table class="table table-striped table-sm" id="tab">
+							<tbody>
+								<tr th:each="data:${dataList}">
+									<td style="display: none" th:text="${data.date}"></td>
+									<td style="display: none" th:text="${data.code}"></td>
+									<td style="display: none" th:text="${data.fundName}"></td>
+									<td style="display: none" th:text="${data.company}"></td>
+									<td style="display: none" th:text="${data.closingPrice}"></td>
+									<td style="display: none" th:text="${data.growthRate}"></td>
+									<td style="display: none" th:text="${data.previousClose}"></td>
+									<td style="display: none" th:text="${data.change}"></td>
+									<td style="display: none" th:text="${data.OneYearChange}"></td>
+									<td style="display: none" th:text="${data.turnover}"></td>
+									<td style="display: none" th:text="${data.ROE}"></td>
+									<td style="display: none" th:text="${data.ROA}"></td>
+									<td style="display: none" th:text="${data.morningstarRating}"></td>
+									<td style="display: none" th:text="${data.riskRating}"></td>
+									<td style="display: none" th:text="${data.TTMYield}"></td>
+									<td style="display: none" th:text="${data.YTDFundReturn}"></td>
+									<td style="display: none" th:text="${data.threeMonthFundReturn}"></td>
+									<td style="display: none" th:text="${data.oneYearFundReturn}"></td>
+									<td style="display: none" th:text="${data.threeYearFundReturn}"></td>
+									<td style="display: none" th:text="${data.fiveYearFundReturn}"></td>
+									<td style="display: none" th:text="${#strings.substring(data.totalAssets, 0, data.totalAssets.length()-1)}"></td>
+									<td style="display: none" th:text="${#strings.substring(data.totalMarketCapitalization, 0, data.totalMarketCapitalization.length()-1)}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+						<div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+						</div>
+						<div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+						<h1 class="h2" th:text="${dataList.get(0).fundName}"></h1>
+					</div>
+					<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+					<div id="myChart1" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart2" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart3" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart4" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart5" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart6" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart7" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart8" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart9" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart10" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart11" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart12" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart13" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart14" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart15" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart16" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart17" style="width: 1200px; height: 500px;"></div>
+					<br>
+					<div id="myChart18" style="width: 1200px; height: 500px;"></div>
+
+					<script type="text/javascript">
+						var labels = [];
+						var datas1 = [];
+						var datas2 = [];
+						var datas3 = [];
+						var datas4 = [];
+						var datas5 = [];
+						var datas6 = [];
+						var datas7 = [];
+						var datas8 = [];
+						var datas9 = [];
+						var datas10 = [];
+						var datas11 = [];
+						var datas12 = [];
+						var datas13 = [];
+						var datas14 = [];
+						var datas15 = [];
+						var datas16 = [];
+						var datas17 = [];
+						var datas18 = [];
+						var tb = document.getElementById('tab');
+						var rows = tb.rows;
+						for(var i = rows.length - 1; i >= 0; i--) {
+							labels.push(rows[i].cells[0].innerText);
+							datas1.push(Number(rows[i].cells[4].innerText));
+							datas2.push(Number(rows[i].cells[5].innerText));
+							datas3.push(Number(rows[i].cells[6].innerText));
+							datas4.push(Number(rows[i].cells[7].innerText));
+							datas5.push(Number(rows[i].cells[8].innerText));
+							datas6.push(Number(rows[i].cells[9].innerText));
+							datas7.push(Number(rows[i].cells[10].innerText));
+							datas8.push(Number(rows[i].cells[11].innerText));
+							datas9.push(Number(rows[i].cells[12].innerText));
+							datas10.push(Number(rows[i].cells[13].innerText));
+							datas11.push(Number(rows[i].cells[14].innerText));
+							datas12.push(Number(rows[i].cells[15].innerText));
+							datas13.push(Number(rows[i].cells[16].innerText));
+							datas14.push(Number(rows[i].cells[17].innerText));
+							datas15.push(Number(rows[i].cells[18].innerText));
+							datas16.push(Number(rows[i].cells[19].innerText));
+							datas17.push(Number(rows[i].cells[20].innerText));
+							datas18.push(Number(rows[i].cells[21].innerText));
+						}
+
+						var myChart1 = echarts.init(document.getElementById("myChart1"));
+						option1 = {
+							title: {
+								text: '收盘价趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['收盘价']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '收盘价',
+									type: 'line',
+									stack: '总量',
+									data: datas1
+								}
+							]
+						};
+						myChart1.setOption(option1);
+
+						var myChart2 = echarts.init(document.getElementById("myChart2"));
+						option2 = {
+							title: {
+								text: '增长率趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['增长率（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '增长率（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas2
+								}
+							]
+						};
+						myChart2.setOption(option2);
+
+						var myChart3 = echarts.init(document.getElementById("myChart3"));
+						option3 = {
+							title: {
+								text: '前收盘趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['前收盘']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '前收盘',
+									type: 'line',
+									stack: '总量',
+									data: datas3
+								}
+							]
+						};
+						myChart3.setOption(option3);
+
+						var myChart4 = echarts.init(document.getElementById("myChart4"));
+						option4 = {
+							title: {
+								text: '涨跌额趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['涨跌额']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '涨跌额',
+									type: 'line',
+									stack: '总量',
+									data: datas4
+								}
+							]
+						};
+						myChart4.setOption(option4);
+
+						var myChart5 = echarts.init(document.getElementById("myChart5"));
+						option5 = {
+							title: {
+								text: '一年涨跌幅趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['一年涨跌幅（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '一年涨跌幅（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas5
+								}
+							]
+						};
+						myChart5.setOption(option5);
+
+						var myChart6 = echarts.init(document.getElementById("myChart6"));
+						option6 = {
+							title: {
+								text: '周转率趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['周转率（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '周转率（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas6
+								}
+							]
+						};
+						myChart6.setOption(option6);
+
+						var myChart7 = echarts.init(document.getElementById("myChart7"));
+						option7 = {
+							title: {
+								text: 'ROE趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['ROE（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: 'ROE（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas7
+								}
+							]
+						};
+						myChart7.setOption(option7);
+
+						var myChart8 = echarts.init(document.getElementById("myChart8"));
+						option8 = {
+							title: {
+								text: 'ROA趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['ROA（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: 'ROA（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas8
+								}
+							]
+						};
+						myChart8.setOption(option8);
+
+						var myChart9 = echarts.init(document.getElementById("myChart9"));
+						option9 = {
+							title: {
+								text: '晨星评级趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['晨星评级']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '晨星评级',
+									type: 'line',
+									stack: '总量',
+									data: datas9
+								}
+							]
+						};
+						myChart9.setOption(option9);
+
+						var myChart10 = echarts.init(document.getElementById("myChart10"));
+						option10 = {
+							title: {
+								text: '风险评级趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['风险评级']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '风险评级',
+									type: 'line',
+									stack: '总量',
+									data: datas10
+								}
+							]
+						};
+						myChart10.setOption(option10);
+
+						var myChart11 = echarts.init(document.getElementById("myChart11"));
+						option11 = {
+							title: {
+								text: '过去十二个月收益率趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['过去十二个月收益率（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '过去十二个月收益率（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas11
+								}
+							]
+						};
+						myChart11.setOption(option11);
+
+						var myChart12 = echarts.init(document.getElementById("myChart12"));
+						option12 = {
+							title: {
+								text: '年初至今基金回报趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['年初至今基金回报（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '年初至今基金回报（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas12
+								}
+							]
+						};
+						myChart12.setOption(option12);
+
+						var myChart13 = echarts.init(document.getElementById("myChart13"));
+						option13 = {
+							title: {
+								text: '三个月基金回报趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['三个月基金回报（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '三个月基金回报（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas13
+								}
+							]
+						};
+						myChart13.setOption(option13);
+
+						var myChart14 = echarts.init(document.getElementById("myChart14"));
+						option14 = {
+							title: {
+								text: '一年基金回报趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['一年基金回报（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '一年基金回报（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas14
+								}
+							]
+						};
+						myChart14.setOption(option14);
+
+						var myChart15 = echarts.init(document.getElementById("myChart15"));
+						option15 = {
+							title: {
+								text: '三年基金回报趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['三年基金回报（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '三年基金回报（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas15
+								}
+							]
+						};
+						myChart15.setOption(option15);
+
+						var myChart16 = echarts.init(document.getElementById("myChart16"));
+						option16 = {
+							title: {
+								text: '五年基金回报趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['五年基金回报（%）']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '五年基金回报（%）',
+									type: 'line',
+									stack: '总量',
+									data: datas16
+								}
+							]
+						};
+						myChart16.setOption(option16);
+
+						var myChart17 = echarts.init(document.getElementById("myChart17"));
+						option17 = {
+							title: {
+								text: '总资产趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['总资产(M)']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '总资产(M)',
+									type: 'line',
+									stack: '总量',
+									data: datas17
+								}
+							]
+						};
+						myChart17.setOption(option17);
+
+						var myChart18 = echarts.init(document.getElementById("myChart18"));
+						option18 = {
+							title: {
+								text: '总市值趋势图'
+							},
+							tooltip: {
+								trigger: 'axis'
+							},
+							legend: {
+								data: ['总市值(B)']
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							toolbox: {
+								feature: {
+									saveAsImage: {}
+								}
+							},
+							xAxis: {
+								type: 'category',
+								boundaryGap: false,
+								data: labels
+							},
+							yAxis: {
+								type: 'value'
+							},
+							series: [
+								{
+									name: '总市值(B)',
+									type: 'line',
+									stack: '总量',
+									data: datas18
+								}
+							]
+						};
+						myChart18.setOption(option18);
+					</script>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+		<script type="text/javascript" src="asserts/js/Chart.min.js" th:src="@{/asserts/js/Chart.min.js}"></script>
+	</body>
+</html>

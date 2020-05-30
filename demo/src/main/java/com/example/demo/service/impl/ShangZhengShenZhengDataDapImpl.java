@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dao.ShangZhengShenZhengDataDao;
+import com.example.demo.entities.JiJinData;
 import com.example.demo.entities.ShangZhengShenZhengData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -52,7 +53,10 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
         long recordTotal = mongoTemplate.count(query, ShangZhengShenZhengData.class, "shangzheng_shenzheng_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<ShangZhengShenZhengData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, ShangZhengShenZhengData.class, "shangzheng_shenzheng_data");
@@ -92,7 +96,10 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
         long recordTotal = mongoTemplate.count(query, ShangZhengShenZhengData.class, "shangzheng_shenzheng_data");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<ShangZhengShenZhengData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, ShangZhengShenZhengData.class, "shangzheng_shenzheng_data");
@@ -140,7 +147,10 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
         long recordTotal = mongoTemplate.count(query, ShangZhengShenZhengData.class, "zstd");
         int pageTotal = (int) (recordTotal / pageSize + (recordTotal % pageSize == 0 ? 0 : 1));  // 总页数
         System.out.println(pageTotal);
-        pageNum = pageNum > pageTotal ? pageTotal : pageNum;
+        if (pageNum <= 0)
+            pageNum = 1;
+        else if (pageNum > pageTotal)
+            return new ArrayList<ShangZhengShenZhengData>();
         int offset = (pageNum - 1) * pageSize;
         query.skip(offset).limit(pageSize);  // 分页逻辑
         return mongoTemplate.find(query, ShangZhengShenZhengData.class, "zstd");
@@ -160,5 +170,47 @@ public class ShangZhengShenZhengDataDapImpl implements ShangZhengShenZhengDataDa
     @Override
     public Long ShenZhengCount() {
         return mongoTemplate.count(new Query(Criteria.where("type").is(2)), ShangZhengShenZhengData.class, "zstd");
+    }
+
+    /**
+     * 用于返回查询记录数
+     */
+    @Override
+    public Long recordTotal(String input, String selection, Integer pageNum, Integer pageSize) {
+        String[] ss = input.split("\\+");
+        Query query = new Query();
+
+        if (ss[0].equals("上证"))
+            query.addCriteria(Criteria.where("type").is(1));
+        else
+            query.addCriteria(Criteria.where("type").is(2));
+
+        if (ss.length == 2) {
+            Pattern pattern = Pattern.compile("^.*" + ss[1] + ".*$", Pattern.CASE_INSENSITIVE);
+            if (ss[1].matches("\\d+"))
+                query.addCriteria(Criteria.where("code").regex(pattern));
+            else
+                query.addCriteria(Criteria.where("name").regex(pattern));
+        }
+
+        if (selection == null || selection.length() == 0)
+            selection = "comprehensive";
+
+        if (selection.equals("comprehensive"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("closingPrice"), Sort.Order.desc("change"), Sort.Order.desc("quoteChange")));
+        else if (selection.equals("closingPriceRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("closingPrice")));
+        else if (selection.equals("closingPriceDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("closingPrice")));
+        else if (selection.equals("changeRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("change")));
+        else if (selection.equals("changeDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("change")));
+        else if (selection.equals("quoteChangeRise"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.asc("quoteChange")));
+        else if (selection.equals("quoteChangeDrop"))
+            query.with(Sort.by(Sort.Order.desc("date"), Sort.Order.desc("quoteChange")));
+
+        return mongoTemplate.count(query, ShangZhengShenZhengData.class, "zstd");
     }
 }

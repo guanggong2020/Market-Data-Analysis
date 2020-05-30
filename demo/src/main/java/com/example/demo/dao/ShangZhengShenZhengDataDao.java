@@ -10,4 +10,5 @@ public interface ShangZhengShenZhengDataDao {
     List<ShangZhengShenZhengData> findDataByRegex(String input, String selection, Integer pageNum, Integer pageSize);
     Long ShangZhengCount();
     Long ShenZhengCount();
+    Long recordTotal(String input, String selection, Integer pageNum, Integer pageSize);
 }

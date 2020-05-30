@@ -1,72 +1,77 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Administrator;
-import com.example.demo.entities.User;
-import com.example.demo.mapper.AdministratorMapper;
+import com.example.demo.entities.Person;
+import com.example.demo.mapper.PersonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class AdministratorController {
 
     @Autowired
-    private AdministratorMapper administratorMapper;
+    private PersonMapper personMapper;
 
-    //查询所有用户返回列表页面
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/administrators")
-    public String list(Model model){
-        List<Administrator> administrators = administratorMapper.getAdministrator();
-        //放在请求域中
+    public String list(Model model) {
+        List<Person> administrators = new ArrayList<>();
+        for (Person administrator : personMapper.getUser()) {
+            String[] roles = administrator.getRoles().split(",");
+            if (roles[0].equals("ROLE_ADMIN")) {
+                administrator.setPassword("******");
+                administrators.add(administrator);
+            }
+        }
         model.addAttribute("administrators", administrators);
-        // thymeleaf默认就会拼串
-        // classpath:/templates/xxxx.html
         return "administrator/list";
     }
 
-    //来到员工添加页面
     @GetMapping("/administrator/add")
     public String toAddPage(Model model){
-        //来到添加页面,查出所有的部门，在页面显示
         return "administrator/add";
     }
 
-    //员工添加
-    //SpringMVC自动将请求参数和入参对象的属性进行一一绑定；要求请求参数的名字和javaBean入参的对象里面的属性名是一样的
     @PostMapping("/administrator/add")
-    public String addUser(Administrator administrator){
-        if (!administrator.getUserName().trim().equals("") && !administrator.getPassWord().trim().equals(""))
-            administratorMapper.insertAdministrator(administrator);
-        // redirect: 表示重定向到一个地址  /代表当前项目路径
-        // forward: 表示转发到一个地址
+    public String addUser(Person administrator, Model model) {
+        if (!administrator.getUsername().trim().equals("") && !administrator.getPassword().trim().equals("")) {
+            if (personMapper.findByUserName(administrator.getUsername()) != null) {
+                model.addAttribute("msg", "该用户名已存在");
+                return "administrator/add";
+            }
+            administrator.setPassword(passwordEncoder.encode(administrator.getPassword()));
+            personMapper.insertUser(administrator);
+        }
         return "redirect:/administrators";
     }
 
-    // 来到修改页面，查出当前管理员，在页面回显
     @GetMapping("/administrator/edit/{id}")
     public String toEditPage(@PathVariable("id") Integer id, Model model){
-        Administrator administrator = administratorMapper.getAdministratorById(id);
+        Person administrator = personMapper.getUserById(id);
+        administrator.setPassword("请重新填写");
         model.addAttribute("administrator", administrator);
         return "administrator/add";
     }
 
-    // 管理员删除
-    @GetMapping("/administrator/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id){
-        administratorMapper.deleteAdministratorById(id);
+    @DeleteMapping("/administrator/delete/{id}")
+    public String deleteUser(@PathVariable("id") Integer id) {
+        personMapper.deleteUserById(id);
         return "redirect:/administrators";
     }
 
     @PutMapping("/administrator/add")
-    public String updateUser(Administrator administrator){
-        if (!administrator.getUserName().trim().equals("") && !administrator.getPassWord().trim().equals(""))
-            administratorMapper.updateAdministrator(administrator);
+    public String updateUser(Person administrator) {
+        if (!administrator.getUsername().trim().equals("") && !administrator.getPassword().trim().equals("")) {
+            administrator.setPassword(passwordEncoder.encode(administrator.getPassword()));
+            personMapper.updateUser(administrator);
+        }
         return "redirect:/administrators";
     }
 }

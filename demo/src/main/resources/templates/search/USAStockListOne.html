@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -47,7 +48,7 @@
 		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
 		<div th:replace="commons/bar::topbar"></div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
 			<div class="row">
 				<!--引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar"></div>
@@ -55,9 +56,11 @@
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 					<form class="w-100" th:action="@{/search/us}" method="post">
 						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<input type="hidden" name="selection01" th:if="${selection01!=null}" th:value="${selection01}">
+						<input type="hidden" name="selection02" th:if="${selection02!=null}" th:value="${selection02}">
 						<div style="width: 40%; float: left">
-							<label>起始日期：</label><input name="formDate" type="date" th:value="${date!=null}?${date}">
-							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${date!=null}?${date}">
+							<label>起始日期：</label><input name="fromDate" type="date" th:value="${fromDate!=null}?${#dates.format(fromDate,'yyyy-MM-dd')}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${toDate!=null}?${#dates.format(toDate,'yyyy-MM-dd')}">
 						</div>
 						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
 					</form>
@@ -76,14 +79,14 @@
 									<th>最低价</th>
 									<th>前收盘</th>
 									<th>涨跌额</th>
-									<th>涨跌幅</th>
-									<th>换手率</th>
-									<th>振幅</th>
+									<th>涨跌幅(%)</th>
+									<th>换手率(%)</th>
+									<th>振幅(%)</th>
 									<th>成交量</th>
 									<th>成交金额</th>
-									<th>市盈率</th>
+									<th>市盈率(%)</th>
 									<th>量比</th>
-									<th>市净率</th>
+									<th>市净率(%)</th>
 									<th>上市时间</th>
 									<th>每股收益</th>
 									<th>每股净资产</th>
@@ -101,14 +104,14 @@
 									<td th:text="${data.minPrice}"></td>
 									<td th:text="${data.previousClose}"></td>
 									<td th:text="${data.change}"></td>
-									<td th:text="${data.quoteChange}+'%'"></td>
-									<td th:text="${data.turnoverRate}+'%'"></td>
-									<td th:text="${data.amplitude}+'%'"></td>
+									<td th:text="${data.quoteChange}"></td>
+									<td th:text="${data.turnoverRate}"></td>
+									<td th:text="${data.amplitude}"></td>
 									<td th:text="${#numbers.formatInteger(data.volume, 1)}"></td>
 									<td th:text="${#numbers.formatInteger(data.turnover, 1)}"></td>
-									<td th:text="${data.PER}+'%'"></td>
+									<td th:text="${data.PER}"></td>
 									<td th:text="${data.QRR}"></td>
-									<td th:text="${data.PBR}+'%'"></td>
+									<td th:text="${data.PBR}"></td>
 									<td th:text="${#numbers.formatInteger(data.TTM, 1)}"></td>
 									<td th:text="${data.EPS}"></td>
 									<td th:text="${data.NAVPS}"></td>

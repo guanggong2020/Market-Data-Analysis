@@ -21,8 +21,8 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `admin`;
 CREATE TABLE `admin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userName` varchar(255) DEFAULT NULL,
-  `passWord` varchar(255) DEFAULT NULL,
+  `userName` varchar(255) NOT NULL,
+  `passWord` varchar(255) NOT NULL,
+  `roles` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-

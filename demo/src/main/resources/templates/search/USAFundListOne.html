@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>行情后台管理</title>
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--引入抽取的topbar-->
+		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
+		<div th:replace="commons/bar::topbar"></div>
+
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
+			<div class="row">
+				<!--引入侧边栏-->
+				<div th:replace="commons/bar::#sidebar"></div>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<form class="w-100" th:action="@{/search/uf}" method="post">
+						<input type="hidden" name="code" th:if="${dataList!=null}" th:value="${dataList.get(0).code}">
+						<input type="hidden" name="selection01" th:if="${selection01!=null}" th:value="${selection01}">
+						<input type="hidden" name="selection02" th:if="${selection02!=null}" th:value="${selection02}">
+						<div style="width: 40%; float: left">
+							<label>起始日期：</label><input name="fromDate" type="date" th:value="${fromDate!=null}?${#dates.format(fromDate,'yyyy-MM-dd')}">
+							<label style="margin-left: 20px">结束日期：</label><input name="toDate" type="date" th:value="${toDate!=null}?${#dates.format(toDate,'yyyy-MM-dd')}">
+						</div>
+						<button class="btn btn-info btn-sm" type="submit" style="width: 5%; float: left">提交</button>
+					</form>
+					<br>
+					<br>
+					<div class="table-responsive">
+						<table class="table table-striped table-sm">
+							<thead>
+								<tr>
+									<th>时间</th>
+									<th>代码</th>
+									<th>基金名称</th>
+									<th>发行商</th>
+									<th>收盘价</th>
+									<th>增长率(%)</th>
+									<th>前收盘</th>
+									<th>涨跌额</th>
+									<th>一年涨跌幅(%)</th>
+									<th>周转率(%)</th>
+									<th>ROE(%)</th>
+									<th>ROA(%)</th>
+									<th>晨星评级</th>
+									<th>风险评级</th>
+									<th>过去十二个月收益率(%)</th>
+									<th>年初至今基金回报(%)</th>
+									<th>三个月基金回报(%)</th>
+									<th>一年基金回报(%)</th>
+									<th>三年基金回报(%)</th>
+									<th>五年基金回报(%)</th>
+									<th>总资产(M)</th>
+									<th>总市值(B)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="data:${dataList}">
+									<td th:text="${data.date}"></td>
+									<td th:text="${data.code}"></td>
+									<td th:text="${data.fundName}"></td>
+									<td th:text="${data.company}"></td>
+									<td th:text="${data.closingPrice}"></td>
+									<td th:text="${data.growthRate}"></td>
+									<td th:text="${data.previousClose}"></td>
+									<td th:text="${data.change}"></td>
+									<td th:text="${data.oneYearChange}"></td>
+									<td th:text="${data.turnover}"></td>
+									<td th:text="${data.ROE}"></td>
+									<td th:text="${data.ROA}"></td>
+									<td th:text="${data.morningstarRating}"></td>
+									<td th:text="${data.RiskRating}"></td>
+									<td th:text="${data.TTMYield}"></td>
+									<td th:text="${data.YTDFundReturn}"></td>
+									<td th:text="${data.threeMonthFundReturn}"></td>
+									<td th:text="${data.oneYearFundReturn}"></td>
+									<td th:text="${data.threeYearFundReturn}"></td>
+									<td th:text="${data.fiveYearFundReturn}"></td>
+									<td th:text="${#strings.substring(data.totalAssets, 0, data.totalAssets.length()-1)}"></td>
+									<td th:text="${#strings.substring(data.totalMarketCapitalization, 0, data.totalMarketCapitalization.length()-1)}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+	</body>
+</html>

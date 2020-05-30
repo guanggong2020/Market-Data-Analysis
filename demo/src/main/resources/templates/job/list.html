@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>行情后台管理</title>
+
+		<!-- 引入 echarts.js -->
+		<script src="asserts/js/echarts.min.js"></script>
+
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		
+		<style type="text/css">
+			/* Chart.js */
+
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+
+	<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0" th:fragment="topbar" sec:authorize="hasRole('USER')">
+		<h2 class="navbar-brand col-sm-3 col-md-2 mr-0">
+			<svg class="bi bi-person-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+			</svg>
+			<span sec:authentication="name"></span>
+		</h2>
+		<ul class="navbar-nav px-3">
+			<form th:action="@{/logout}" method="post">
+				<input style="border: #343a40; background: #343a40; color: white" type="submit" value="退出"/>
+			</form>
+		</ul>
+	</nav>
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
+			<div class="row">
+				<!--引入sidebar-->
+				<div th:replace="commons/bar::#sidebar(activeUri='job/list.html')"></div>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<div class="table-responsive">
+						<h2 style="text-align: center">拉勾网职位信息</h2>
+						<table class="table table-striped table-sm" id="tab1">
+							<tbody>
+							<tr th:each="secondTypeCount:${secondTypeCounts}">
+								<td style="display: none" th:text="${secondTypeCount._id}"></td>
+								<td style="display: none" th:text="${secondTypeCount.count}"></td>
+							</tr>
+							</tbody>
+						</table>
+						<table class="table table-striped table-sm" id="tab2">
+							<tbody>
+							<tr th:each="salaryCount:${salaryCounts}">
+								<td style="display: none" th:text="${salaryCount._id}"></td>
+								<td style="display: none" th:text="${salaryCount.count}"></td>
+							</tr>
+							</tbody>
+						</table>
+						<table class="table table-striped table-sm" id="tab3">
+							<tbody>
+							<tr th:each="cityCount:${cityCounts}">
+								<td style="display: none" th:text="${cityCount._id}"></td>
+								<td style="display: none" th:text="${cityCount.count}"></td>
+							</tr>
+							</tbody>
+						</table>
+						<table class="table table-striped table-sm" id="tab4">
+							<tbody>
+							<tr th:each="educationCount:${educationCounts}">
+								<td style="display: none" th:text="${educationCount._id}"></td>
+								<td style="display: none" th:text="${educationCount.count}"></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+						<div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+						</div>
+						<div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+							<div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+						</div>
+					</div>
+					<div id="myChart4" style="width: 600px; height: 400px"></div>
+					<br>
+					<br>
+					<div id="myChart1" style="width: 1200px; height: 400px"></div>
+					<br>
+					<br>
+					<div id="myChart2" style="width: 1200px; height: 400px"></div>
+					<br>
+					<br>
+					<div id="myChart3" style="width: 1200px; height: 400px"></div>
+					<script type="text/javascript">
+						var tb1 = document.getElementById("tab1");
+						var tb2 = document.getElementById("tab2");
+						var tb3 = document.getElementById("tab3");
+						var tb4 = document.getElementById("tab4");
+						var rows1 = tb1.rows;
+						var rows2 = tb2.rows;
+						var rows3 = tb3.rows;
+						var rows4 = tb4.rows;
+						var labels1 = [];
+						var labels2 = [];
+						var labels3 = [];
+						var labels4 = ["大专", "本科", "硕士", "博士", "其他"];
+						var datas1 = [];
+						var datas2 = [];
+						var datas3 = [];
+						var datas4 = [];
+
+						for(var i = 0; i < 10; i++) {
+							labels1.push(rows1[i].cells[0].innerText);
+							datas1.push(Number.parseInt(rows1[i].cells[1].innerText));
+						}
+
+						for(var i = 0; i < 10; i++) {
+							labels2.push(rows2[i].cells[0].innerText);
+							datas2.push(Number.parseInt(rows2[i].cells[1].innerText));
+						}
+
+						for(var i = 0; i < 10; i++) {
+							labels3.push(rows3[i].cells[0].innerText);
+							datas3.push(Number.parseInt(rows3[i].cells[1].innerText));
+						}
+
+						for(var i = 0; i < rows4.length; i++) {
+							datas4.push(Number.parseInt(rows4[i].cells[1].innerText));
+						}
+
+						var myChart1 = echarts.init(document.getElementById('myChart1'));
+						option1 = {
+							title: {
+								text: '热门前 10 职业',
+								subtext: '',
+								left: 'center'
+							},
+							color: ['#3398DB'],
+							tooltip: {
+								trigger: 'axis',
+								axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+									type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								}
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							xAxis: [
+								{
+									type: 'category',
+									data: labels1,
+									axisTick: {
+										alignWithLabel: true
+									}
+								}
+							],
+							yAxis: [
+								{
+									type: 'value'
+								}
+							],
+							series: [
+								{
+									name: '职位数量',
+									type: 'bar',
+									barWidth: '60%',
+									data: datas1
+								}
+							]
+						};
+						myChart1.setOption(option1);
+
+						var myChart2 = echarts.init(document.getElementById('myChart2'));
+						option2 = {
+							title: {
+								text: '热门前 10 薪资范围',
+								subtext: '',
+								left: 'center'
+							},
+							color: ['#b0a4e3'],
+							tooltip: {
+								trigger: 'axis',
+								axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+									type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								}
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							xAxis: [
+								{
+									type: 'category',
+									data: labels2,
+									axisTick: {
+										alignWithLabel: true
+									}
+								}
+							],
+							yAxis: [
+								{
+									type: 'value'
+								}
+							],
+							series: [
+								{
+									name: '职位数量',
+									type: 'bar',
+									barWidth: '60%',
+									data: datas2
+								}
+							]
+						};
+						myChart2.setOption(option2);
+
+						var myChart3 = echarts.init(document.getElementById('myChart3'));
+						option3 = {
+							title: {
+								text: '职位数量前 10 城市',
+								subtext: '',
+								left: 'center'
+							},
+							color: ['#ffa631'],
+							tooltip: {
+								trigger: 'axis',
+								axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+									type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+								}
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							xAxis: [
+								{
+									type: 'category',
+									data: labels3,
+									axisTick: {
+										alignWithLabel: true
+									}
+								}
+							],
+							yAxis: [
+								{
+									type: 'value'
+								}
+							],
+							series: [
+								{
+									name: '职位数量',
+									type: 'bar',
+									barWidth: '60%',
+									data: datas3
+								}
+							]
+						};
+						myChart3.setOption(option3);
+
+						var myChart4 = echarts.init(document.getElementById('myChart4'));
+						var option4 = {
+							title: {
+								text: '教育水平分布图',
+								subtext: '',
+								left: 'center'
+							},
+							tooltip: {
+								trigger: 'item',
+								formatter: '{a} <br/>{b} : {c} ({d}%)'
+							},
+							legend: {
+								orient: 'vertical',
+								left: 'left',
+								data: labels4
+							},
+							series: [
+								{
+									name: '',
+									type: 'pie',
+									radius: '55%',
+									center: ['50%', '60%'],
+									data: [
+										{value: datas4[1], name: '大专'},
+										{value: datas4[0], name: '本科'},
+										{value: datas4[3], name: '硕士'},
+										{value: datas4[4], name: '博士'},
+										{value: datas4[2], name: '其他'}
+									],
+									emphasis: {
+										itemStyle: {
+											shadowBlur: 10,
+											shadowOffsetX: 0,
+											shadowColor: 'rgba(0, 0, 0, 0.5)'
+										}
+									}
+								}
+							]
+						};
+						myChart4.setOption(option4);
+					</script>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+<!--		<script type="text/javascript" src="asserts/js/Chart.min.js" th:src="@{/asserts/js/Chart.min.js}"></script>-->
+	</body>
+</html>

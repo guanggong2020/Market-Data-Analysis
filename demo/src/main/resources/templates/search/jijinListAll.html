@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name="description" content="">
 		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="asserts/js/jquery-3.2.1.slim.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/webjars/popper.js/1.11.1/dist/popper.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.js}"></script>
 
 		<title>行情后台管理</title>
 		<!-- Bootstrap core CSS -->
@@ -47,7 +52,7 @@
 		<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
 		<div th:replace="commons/bar::topbar"></div>
 
-		<div class="container-fluid">
+		<div class="container-fluid" sec:authorize="hasRole('USER')">
 			<div class="row">
 				<!--引入侧边栏-->
 				<div th:replace="commons/bar::#sidebar"></div>
@@ -75,12 +80,45 @@
 									<td th:name="td4" th:text="${data.cumulativeNetWorth}"></td>
 									<td th:name="td5" th:text="${data.growthRate}"></td>
 									<td th:name="td6">
-										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/}+${data.code}">更多</a>
-										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/graph/}+${data.code}">图形</a>
+										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/}+${data.code}+'/'+${selection01}+'/'+${selection02}">更多</a>
+										<a class="btn btn-sm btn-primary" th:href="@{/search/jijin/graph/}+${data.code}+'/'+${selection01}+'/'+${selection02}">图形</a>
 									</td>
+									<td style="display: none" th:name="t1" th:text="${selection01}"></td>
+									<td style="display: none" th:name="t2" th:text="${selection02}"></td>
+									<td style="display: none" th:name="t3" th:text="${input}"></td>
 								</tr>
 							</tbody>
 						</table>
+					</div>
+
+					<br>
+					<!-- 分页功能 -->
+					<div style="float: right">
+						<ul class="pagination">
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${1}">首页</a></li>
+							<li class="page-item" th:if="(${pageNum}>1)">
+								<a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}-1)" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<li class="page-item active"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${pageNum}" th:if="(${pageNum}<${pageTotal})">[[${pageNum}]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+1)" th:if="(${pageNum}+1<${pageTotal})">[[(${pageNum}+1)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+2)" th:if="(${pageNum}+2<${pageTotal})">[[(${pageNum}+2)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+3)" th:if="(${pageNum}+3<${pageTotal})">[[(${pageNum}+3)]]</a></li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+4)" th:if="(${pageNum}+4<${pageTotal})">[[(${pageNum}+4)]]</a></li>
+							<li class="page-item" th:if="${pageNum}<${pageTotal}">
+								<a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+(${pageNum}+1)" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+							<li class="page-item"><a class="page-link" th:href="@{/search/}+${selection01}+'/'+${selection02}+'/'+${input}+'/'+${pageTotal}">末页</a></li>
+							<li class="page-item" style="float: left">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;去第&nbsp;<input id="whichPage" style="width: 50px" type="text" th:value="${pageNum}"/>&nbsp;页
+								&nbsp;&nbsp;<button class="btn-sm btn-info putBtn">确定</button>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共&nbsp;<input style="width: 50px" type="text" th:value="${pageTotal!=null}?${pageTotal}"/>&nbsp;页
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;共&nbsp;<input style="width: 50px" type="text" th:value="${recordTotal!=null}?${recordTotal}"/>&nbsp;条
+							</li>
+						</ul>
 					</div>
 				</main>
 			</div>
@@ -97,6 +135,18 @@
 		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
 		<script>
 			feather.replace()
+		</script>
+
+		<!-- 选择特定页面 -->
+		<script type="text/javascript">
+			$(".putBtn").click(function() {
+				var selection01 = document.getElementsByName("t1");
+				var selection02 = document.getElementsByName("t2");
+				var input = document.getElementsByName("t3");
+				var whichPage = document.getElementById("whichPage").value;
+				var url = '/search/'+selection01[0].innerHTML+'/'+selection02[0].innerHTML+'/'+input[0].innerHTML+'/'+whichPage;
+				setTimeout(location.href=url, 0);
+			});
 		</script>
 
 		<!--table属性点击排序js-->

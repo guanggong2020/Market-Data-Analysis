@@ -2,10 +2,24 @@
 server:
   servlet:
     context-path: /
+
   tomcat:
     uri-encoding: UTF-8
-  max-http-header-size: 8192
 
+  port: 8080
+
+  # JDK自带证书
+#  ssl:
+#    key-store: classpath:net.tidnotes.cf.jks
+#    key-store-password: eff1cwx2c1tw
+#    key-store-type: JKS
+
+  # 专业证书
+#  ssl:
+#    key-store: C:\Users\吴智键\Desktop\demo\tomcat.keystore
+#    key-store-password: wzj234735
+#    key-store-type: JKS
+#    key-alias: tomcat
 spring:
   # 把数据库日期格式转换成json返回页面的格式
   jackson:
@@ -63,7 +77,7 @@ spring:
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
-    schema:
+#    schema:
 #      - classpath:sql/user.sql
 #      - classpath:sql/administrator.sql
     # SpringBoot2.X版本需要的参数
@@ -71,6 +85,6 @@ spring:
 
 logging:
   level:
-    com.example.demo: trace
+    com.example.demo: debug
   file:
     path: /usr/local/src/logs
