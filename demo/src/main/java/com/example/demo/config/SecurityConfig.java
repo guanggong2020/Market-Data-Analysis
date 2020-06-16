@@ -30,10 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl().disable();
 
         http.
-                authorizeRequests().antMatchers("/", "/register", "/gupiao_data/**", "/jijin_data/**", "/USA_stock_data/**", "/shangzheng_shenzheng_data/**", "/USA_fund_data/**", "/job/**", "/jobs/**", "/druid/**")
+                authorizeRequests().antMatchers("/", "/register", "/gupiao_data/**", "/jijin_data/**", "/USA_stock_data/**", "/shangzheng_shenzheng_data/**", "/USA_fund_data/**", "/jobs/**", "/jobs/**", "/druid/**")
                 .permitAll()
                 .antMatchers("/administrators/**", "/users/**", "/administrator/**", "/user/**").hasRole("ADMIN")
-                .antMatchers("/gpjjlist/**", "/jobs/**", "/search/**").hasRole("USER")
+                .antMatchers("/gpjjlist/**", "/job/**", "/search/**").hasRole("USER")
                 .and()
                 .formLogin().loginPage("/login").loginProcessingUrl("/doLogin").successForwardUrl("/doLogin")
                 .usernameParameter("username")

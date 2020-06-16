@@ -18,7 +18,7 @@ public class JobListController {
     @Autowired
     private JobCountsDao jobCountsDao;
 
-    @GetMapping("/jobs")
+    @GetMapping("/job")
     public String list(Model model) {
         List<SecondTypeCount> secondTypeCounts = jobCountsDao.secondTypeCount();
         List<SalaryCount> salaryCounts = jobCountsDao.salaryCount();
