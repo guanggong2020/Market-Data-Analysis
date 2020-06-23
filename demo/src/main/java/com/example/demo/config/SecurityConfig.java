@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.filter.VerifyCodeFilter;
 import com.example.demo.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,11 +8,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private int tokenValiditySeconds = 864000;
+
+    @Bean
+    VerifyCodeFilter verifyCodeFilter() {
+        return new VerifyCodeFilter();
+    }
 
     @Bean
     UserDetailsService getServiceDetail() {
@@ -26,11 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 定义开放资源，自定义界面，“记住我”功能...
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 默认是所有请求都加上cache-control:no-cache
+        // Spring Security 默认是禁用缓存，我们要开放缓存
         http.headers().cacheControl().disable();
 
-        http.
-                authorizeRequests().antMatchers("/", "/register", "/gupiao_data/**", "/jijin_data/**", "/USA_stock_data/**", "/shangzheng_shenzheng_data/**", "/USA_fund_data/**", "/jobs/**", "/jobs/**", "/druid/**")
+        http.addFilterBefore(verifyCodeFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.authorizeRequests().antMatchers("/", "/register", "/get-validate-code/**", "/gupiao_data/**", "/jijin_data/**", "/USA_stock_data/**", "/shangzheng_shenzheng_data/**", "/USA_fund_data/**", "/jobs/**", "/jobs/**", "/druid/**")
                 .permitAll()
                 .antMatchers("/administrators/**", "/users/**", "/administrator/**", "/user/**").hasRole("ADMIN")
                 .antMatchers("/gpjjlist/**", "/job/**", "/search/**").hasRole("USER")
@@ -41,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().
                 logout().logoutSuccessUrl("/")
                 .and().
-                rememberMe().rememberMeParameter("remember")
+                rememberMe().rememberMeParameter("remember").tokenValiditySeconds(tokenValiditySeconds)
                 .and()
                 // 关闭csrf功能，不然会拦截delete请求
                 .csrf().disable();

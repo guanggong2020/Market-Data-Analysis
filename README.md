@@ -1,6 +1,6 @@
 # Market-Data-Analysis
 # 市场行情数据系统  
-# 地址：net.tidnotes.cf
+# 地址：net.tidnotes.cf/134.175.192.53:8080
 
 系统配置介绍  
 

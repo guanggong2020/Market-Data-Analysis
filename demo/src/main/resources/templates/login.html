@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -11,6 +12,39 @@
 		<link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet" type="text/css">
 		<!-- Custom styles for this template -->
 		<link href="asserts/css/signin.css" th:href="@{/asserts/css/signin.css}" rel="stylesheet" type="text/css">
+
+		<style>
+			.mybox {
+				width: 300px;
+				height: 46px;
+				position: absolute;
+			}
+
+			.mybox input {
+				display:block;
+				width:100%;
+				height: 100%;
+				padding:.375rem .75rem;
+				font-size:1rem;
+				line-height:1.5;
+				color:#495057;
+				background-color:#fff;
+				background-clip:padding-box;
+				border:1px solid #ced4da;
+				border-radius:.25rem;
+				transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+			}
+
+			.mybox span {
+				position: absolute;
+				display: block;
+				width: 30%;
+				height: 40px;
+				right: 4px;
+				top: 1px;
+				background-color: white;
+			}
+		</style>
 	</head>
 	<body class="text-center">
 		<form class="form-signin" action="dashboard.html" th:action="@{/doLogin}" method="post">
@@ -18,14 +52,23 @@
 			<h1 class="h3 mb-3 font-weight-normal" th:text="#{login.tip}">Please sign in</h1>
 			<!--判断-->
 <!--			<p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>-->
+			<p style="color: red">[[${session.msg}]]</p>
 			<label class="sr-only" th:text="#{login.username}">Username</label>
-			<input type="text" name="username" class="form-control" placeholder="Username" th:placeholder="#{login.username}" required="" autofocus="">
+			<input type="text" name="username" class="form-control" placeholder="UserName" th:placeholder="#{login.username}" required="" autofocus="">
 			<label class="sr-only" th:text="#{login.password}">Password</label>
-			<input type="password" name="password" class="form-control" placeholder="Password" th:placeholder="#{login.password}" required="" autofocus="">
+			<input type="password" name="password" class="form-control" placeholder="PassWord" th:placeholder="#{login.password}" required="" autofocus="">
+			<!-- 由于开启了缓存，所以验证码刷新需要指定一个随机数，不然没法刷新，由脚本进行随机指定 -->
+			<div class="mybox">
+				<input type="text" name="verifycode" placeholder="VerifyCode" th:placeholder="#{login.verifycode}" required="" autofocus="">
+				<span><img id="safecode" style="float:right; height: 40px" src="get-validate-code" alt="" title="看不清，请点我！" onclick="reloadcode()"></span>
+			</div>
+			<br/>
+			<br/>
 			<div class="checkbox mb-3">
-				<label style="color: white">
-					<input type="checkbox" name="remember"> [[#{login.remember}]]
+				<label style="color: white; float:left">
+					<input style="zoom: 110%" type="checkbox" name="remember"> [[#{login.remember}]]
         		</label>
+				<p style="color: yellow; float: right">[[${session.message}]]</p>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{login.btn}">Sign in</button>
 			<a class="btn btn-sm" style="color: white; float: right" th:href="@{/register}" th:text="#{login.register}">Register</a>
@@ -33,5 +76,14 @@
 			<a class="btn btn-sm" style="color: white" th:href="@{/index.html(l='zh_CN')}">中文</a>
 			<a class="btn btn-sm" style="color: white" th:href="@{/index.html(l='en_US')}">English</a>
 		</form>
+
+		<!-- 刷新验证码 -->
+		<script type="text/javascript">
+			function reloadcode() {
+				// console.log("验证码刷新了...")
+				var verify = document.getElementById('safecode');
+				verify.setAttribute('src','get-validate-code?' + Math.random());    // 需要加上随机数
+			}
+		</script>
 	</body>
 </html>

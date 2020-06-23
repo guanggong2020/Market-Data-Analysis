@@ -21,6 +21,12 @@ server:
 #    key-store-type: JKS
 #    key-alias: tomcat
 spring:
+  # 当遇到同样名字的时候，是否允许覆盖注册
+  application:
+    name: SpringBoot_easyPOI
+  main:
+    allow-bean-definition-overriding: true
+
   # 把数据库日期格式转换成json返回页面的格式
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

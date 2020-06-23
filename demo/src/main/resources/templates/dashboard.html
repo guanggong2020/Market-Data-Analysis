@@ -60,6 +60,7 @@
 			<br>
 			<h2 style="text-align: center">欢迎使用 <span style="color: red">市场行情系统 </span><a th:href="@{/login}">请登录</a></h2>
 		</div>
+
 		<!--引入topbar-->
 		<div th:replace="commons/bar::topbar" ></div>
 		<div class="container-fluid" sec:authorize="hasRole('USER')">
